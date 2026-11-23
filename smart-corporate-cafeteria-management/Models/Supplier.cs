@@ -1,4 +1,5 @@
-﻿namespace smart_corporate_cafeteria_management.Models
+﻿
+namespace smart_corporate_cafeteria_management.Models
 {
     public class Supplier
     {

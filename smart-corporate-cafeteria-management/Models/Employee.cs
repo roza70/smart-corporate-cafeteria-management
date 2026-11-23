@@ -1,14 +1,15 @@
-﻿namespace smart_corporate_cafeteria_management.Models
+﻿
+namespace smart_corporate_cafeteria_management.Models
 {
     public class Employee
     {
         public int EmployeeId { get; set; }
 
-        public string Name { get; set; } = string.Empty;
+        public string EmployeeName { get; set; } = string.Empty;
 
-        public string Email { get; set; } = string.Empty;
+        public string? Email { get; set; }
 
-        public string Phone { get; set; } = string.Empty;
+        public string? Phone { get; set; }
 
         public int DepartmentId { get; set; }
 

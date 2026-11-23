@@ -1,4 +1,5 @@
-﻿namespace smart_corporate_cafeteria_management.Models
+﻿
+namespace smart_corporate_cafeteria_management.Models
 {
     public class Recipe
     {
@@ -10,6 +11,7 @@
 
         public int ServingSize { get; set; }
 
-        public string PreparationInstructions { get; set; } = string.Empty;
+        public string PreparationInstructions { get; set; }
+            = string.Empty;
     }
 }

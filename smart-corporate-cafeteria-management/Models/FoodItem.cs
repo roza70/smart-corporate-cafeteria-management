@@ -1,4 +1,5 @@
-﻿namespace smart_corporate_cafeteria_management.Models
+﻿
+namespace smart_corporate_cafeteria_management.Models
 {
     public class FoodItem
     {
@@ -6,12 +7,11 @@
 
         public string FoodName { get; set; } = string.Empty;
 
-        public string Category { get; set; } = string.Empty;
+        public int CategoryID { get; set; }
 
-        public string Unit { get; set; } = string.Empty;
+        public string? Description { get; set; }
 
-        public decimal UnitPrice { get; set; }
-
-        public bool IsAvailable { get; set; } = true;
+        // Relationship with FoodCategory
+        public FoodCategory? FoodCategory { get; set; }
     }
 }

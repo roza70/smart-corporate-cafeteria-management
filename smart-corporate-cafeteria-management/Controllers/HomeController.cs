@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using smart_corporate_cafeteria_management.Models;
 using System.Diagnostics;
@@ -16,10 +17,17 @@ namespace smart_corporate_cafeteria_management.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [ResponseCache(
+            Duration = 0,
+            Location = ResponseCacheLocation.None,
+            NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id
+                    ?? HttpContext.TraceIdentifier
+            });
         }
     }
 }

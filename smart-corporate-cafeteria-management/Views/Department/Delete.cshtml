@@ -1,0 +1,53 @@
+﻿@model smart_corporate_cafeteria_management.Models.Department
+
+@{
+    ViewData["Title"] = "Delete Department";
+}
+
+<h1>Delete Department</h1>
+
+<h3>Are you sure you want to delete this department?</h3>
+
+<div class="card p-3">
+    <dl class="row">
+        <dt class="col-sm-3">
+            Department ID
+        </dt>
+        <dd class="col-sm-9">
+            @Model.DepartmentId
+        </dd>
+
+        <dt class="col-sm-3">
+            Department Name
+        </dt>
+        <dd class="col-sm-9">
+            @Model.DepartmentName
+        </dd>
+
+        <dt class="col-sm-3">
+            Description
+        </dt>
+        <dd class="col-sm-9">
+            @(Model.Description ?? "No description")
+        </dd>
+
+        <dt class="col-sm-3">
+            Assigned Employees
+        </dt>
+        <dd class="col-sm-9">
+            @(Model.Employees?.Count ?? 0)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="DepartmentId" />
+
+        <button type="submit" class="btn btn-danger">
+            Confirm Delete
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Cancel
+        </a>
+    </form>
+</div>

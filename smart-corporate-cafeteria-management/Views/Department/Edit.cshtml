@@ -4,62 +4,188 @@
     ViewData["Title"] = "Edit Department";
 }
 
-<h1>Edit Department</h1>
+<div class="container-fluid px-0">
 
-<hr />
+    <!-- Page Heading -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Edit Department</h4>
+            <p class="text-muted mb-0">
+                Update department information and details.
+            </p>
+        </div>
 
-<div class="row">
-    <div class="col-md-6">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Departments
+        </a>
+    </div>
 
-        <form asp-action="Edit"
-              asp-route-id="@Model.DepartmentId"
-              method="post">
+    <div class="row g-4">
 
-            <input type="hidden" asp-for="DepartmentId" />
+        <!-- Edit Form -->
+        <div class="col-lg-8">
 
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger"></div>
+            <div class="card border-0 shadow-sm rounded-4">
 
-            <div class="form-group mb-3">
-                <label asp-for="DepartmentName"
-                       class="control-label">
-                    Department Name
-                </label>
+                <div class="card-header bg-white border-0 px-4 pt-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center"
+                             style="width:48px;height:48px;background:#eef1ff;color:#4f6bed;">
+                            <i class="bi bi-pencil-square fs-4"></i>
+                        </div>
 
-                <input asp-for="DepartmentName"
-                       class="form-control" />
+                        <div>
+                            <h5 class="fw-bold mb-1">Department Information</h5>
+                            <small class="text-muted">
+                                Modify the information below.
+                            </small>
+                        </div>
+                    </div>
+                </div>
 
-                <span asp-validation-for="DepartmentName"
-                      class="text-danger"></span>
+                <div class="card-body p-4">
+
+                    <form asp-action="Edit"
+                          asp-route-id="@Model.DepartmentId"
+                          method="post">
+
+                        <input type="hidden" asp-for="DepartmentId" />
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger"
+                             role="alert">
+                        </div>
+
+                        <!-- Department ID -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                Department ID
+                            </label>
+
+                            <input class="form-control bg-light"
+                                   value="#@Model.DepartmentId"
+                                   readonly />
+
+                            <small class="text-muted">
+                                Department ID cannot be changed.
+                            </small>
+                        </div>
+
+                        <!-- Department Name -->
+                        <div class="mb-4">
+                            <label asp-for="DepartmentName"
+                                   class="form-label fw-semibold">
+                                Department Name
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-building"></i>
+                                </span>
+
+                                <input asp-for="DepartmentName"
+                                       class="form-control"
+                                       placeholder="Enter department name" />
+                            </div>
+
+                            <span asp-validation-for="DepartmentName"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label asp-for="Description"
+                                   class="form-label fw-semibold">
+                                Department Description
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="5"
+                                      placeholder="Enter department description..."></textarea>
+
+                            <span asp-validation-for="Description"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Actions -->
+                        <div class="d-flex flex-wrap gap-2 justify-content-end">
+
+                            <a asp-action="Index"
+                               class="btn btn-light border px-4">
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary px-4">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Update Department
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Information Panel -->
+        <div class="col-lg-4">
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-info-circle-fill text-primary fs-5"></i>
+                        <h6 class="fw-bold mb-0">Update Guidelines</h6>
+                    </div>
+
+                    <p class="text-muted small">
+                        Please review the following before updating
+                        department information.
+                    </p>
+
+                    <div class="d-flex gap-3 mb-3">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <div>
+                            <div class="fw-semibold small">Department Name</div>
+                            <small class="text-muted">
+                                Enter a meaningful department name.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 mb-3">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <div>
+                            <div class="fw-semibold small">Description</div>
+                            <small class="text-muted">
+                                Keep the department description clear.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <i class="bi bi-shield-check text-primary"></i>
+                        <div>
+                            <div class="fw-semibold small">Data Safety</div>
+                            <small class="text-muted">
+                                Existing employee assignments should remain unchanged.
+                            </small>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Description"
-                       class="control-label">
-                    Description
-                </label>
-
-                <textarea asp-for="Description"
-                          class="form-control"
-                          rows="3"></textarea>
-
-                <span asp-validation-for="Description"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <button type="submit"
-                        class="btn btn-primary">
-                    Update Department
-                </button>
-
-                <a asp-action="Index"
-                   class="btn btn-secondary">
-                    Back to List
-                </a>
-            </div>
-
-        </form>
+        </div>
 
     </div>
 </div>

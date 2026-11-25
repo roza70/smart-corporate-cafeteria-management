@@ -1,0 +1,146 @@
+﻿@model smart_corporate_cafeteria_management.Models.FoodCategory
+
+@{
+    ViewData["Title"] = "Delete Food Category";
+    var foodCount = Model.FoodItems?.Count ?? 0;
+    var canDelete = foodCount == 0;
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <div class="text-success fw-semibold small mb-1">
+                🥕 CAFETERIA / FOOD CATEGORIES
+            </div>
+            <h2 class="fw-bold mb-1">Delete Food Category</h2>
+            <p class="text-muted mb-0">
+                Review this category before deleting it.
+            </p>
+        </div>
+
+        <a asp-action="Index"
+           class="btn btn-outline-secondary rounded-3 px-3">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Categories
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+                <div style="height:8px;background:linear-gradient(90deg,#dc3545,#f6bd60);">
+                </div>
+
+                <div class="card-body p-4 p-lg-5">
+
+                    <div class="text-center mb-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                             style="width:85px;height:85px;background:#fff0f0;font-size:42px;">
+                            🗑️
+                        </div>
+
+                        <h3 class="fw-bold">Delete this category?</h3>
+
+                        <p class="text-muted">
+                            Please review the information below before proceeding.
+                        </p>
+                    </div>
+
+                    <div class="rounded-4 p-4 mb-4"
+                         style="background:#f8f9fa;">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Category ID</span>
+                            <strong>#@Model.CategoryID</strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Category Name</span>
+                            <strong>@Model.CategoryName</strong>
+                        </div>
+
+                        <div class="mb-3">
+                            <span class="text-muted small d-block mb-1">
+                                Description
+                            </span>
+                            <span>
+                                @(string.IsNullOrWhiteSpace(Model.Description)
+                                    ? "No description available."
+                                    : Model.Description)
+                            </span>
+                        </div>
+
+                        <hr />
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Food Items</span>
+                            <strong>@foodCount</strong>
+                        </div>
+
+                    </div>
+
+                    @if (canDelete)
+                    {
+                        <div class="alert alert-warning rounded-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            This category will be permanently deleted.
+                            This action cannot be undone.
+                        </div>
+
+                        <form asp-action="Delete"
+                              asp-route-id="@Model.CategoryID"
+                              method="post">
+
+                            <input type="hidden" asp-for="CategoryID" />
+
+                            <div class="d-flex justify-content-center flex-wrap gap-2 mt-4">
+
+                                <a asp-action="Index"
+                                   class="btn btn-light border rounded-3 px-4">
+                                    Cancel
+                                </a>
+
+                                <button type="submit"
+                                        class="btn btn-danger rounded-3 px-4"
+                                        onclick="return confirm('Are you sure you want to permanently delete this category?');">
+                                    <i class="bi bi-trash me-1"></i>
+                                    Yes, Delete Category
+                                </button>
+
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger rounded-3">
+                            <i class="bi bi-shield-exclamation me-2"></i>
+                            <strong>Deletion not allowed!</strong>
+                            <p class="mb-0 mt-2">
+                                This category contains @foodCount food item(s).
+                                Remove or reassign those food items before deleting this category.
+                            </p>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a asp-action="Index"
+                               class="btn btn-success rounded-3 px-4">
+                                Back to Categories
+                            </a>
+                        </div>
+                    }
+
+                    <div class="text-center mt-4">
+                        <span class="text-muted small">
+                            🌿 Smart Cafeteria — Keeping your kitchen organized
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

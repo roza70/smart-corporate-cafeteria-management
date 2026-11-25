@@ -1,0 +1,263 @@
+﻿@model IEnumerable<smart_corporate_cafeteria_management.Models.FoodCategory>
+
+@{
+    ViewData["Title"] = "Food Categories";
+    var categories = Model?.ToList() ?? new List<smart_corporate_cafeteria_management.Models.FoodCategory>();
+}
+
+<div class="container-fluid py-3">
+
+    <!-- Page Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">Food Categories</h2>
+            <p class="text-muted mb-0">
+                Organize and manage cafeteria food categories.
+            </p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary px-4 py-2">
+            <i class="bi bi-plus-circle me-2"></i>
+            Add New Category
+        </a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-3 bg-primary bg-opacity-10 p-3">
+                        <i class="bi bi-tags-fill text-primary fs-3"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-1">Total Categories</p>
+                        <h3 class="fw-bold mb-0">@categories.Count</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-3 bg-success bg-opacity-10 p-3">
+                        <i class="bi bi-egg-fried text-success fs-3"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-1">Food Items</p>
+                        <h3 class="fw-bold mb-0">
+                            @categories.Sum(c => c.FoodItems?.Count ?? 0)
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-3 bg-info bg-opacity-10 p-3">
+                        <i class="bi bi-check-circle-fill text-info fs-3"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-1">Registered Records</p>
+                        <h3 class="fw-bold mb-0">@categories.Count</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Category Table -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white border-0 pt-4 px-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <h5 class="fw-bold mb-1">Category List</h5>
+                    <p class="text-muted small mb-0">
+                        View and manage all registered food categories.
+                    </p>
+                </div>
+
+                <div style="max-width: 300px; width: 100%;">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text"
+                               id="categorySearch"
+                               class="form-control bg-light border-start-0"
+                               placeholder="Search categories..." />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show">
+                    <i class="bi bi-check-circle me-2"></i>
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-warning alert-dismissible fade show">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="table-responsive">
+                <table class="table align-middle table-hover" id="categoryTable">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Food Items</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var category in categories)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="rounded-3 bg-primary bg-opacity-10 text-primary
+                                            d-flex align-items-center justify-content-center fw-bold"
+                                             style="width:42px;height:42px;">
+                                            @(string.IsNullOrWhiteSpace(category.CategoryName)
+                                                ? "?"
+                                                : category.CategoryName.Substring(0, 1).ToUpper())
+                                        </div>
+
+                                        <div>
+                                            <div class="fw-semibold">
+                                                @category.CategoryName
+                                            </div>
+                                            <small class="text-muted">
+                                                ID: @category.CategoryID
+                                            </small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(category.Description)
+                                        ? "No description"
+                                        : category.Description)
+                                </td>
+
+                                <td>
+                                    <span class="badge bg-info bg-opacity-10 text-info px-3 py-2">
+                                        @(category.FoodItems?.Count ?? 0) Items
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2">
+                                        Registered
+                                    </span>
+                                </td>
+
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-1">
+                                        <a asp-action="Details"
+                                           asp-route-id="@category.CategoryID"
+                                           class="btn btn-sm btn-outline-info"
+                                           title="Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@category.CategoryID"
+                                           class="btn btn-sm btn-outline-primary"
+                                           title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@category.CategoryID"
+                                           class="btn btn-sm btn-outline-danger"
+                                           title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div id="noResults" class="text-center py-4 d-none">
+                <i class="bi bi-search fs-2 text-muted"></i>
+                <p class="text-muted mt-2 mb-0">
+                    No matching food categories found.
+                </p>
+            </div>
+
+            @if (!categories.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-tags fs-1 text-muted"></i>
+                    <h5 class="mt-3">No Categories Found</h5>
+                    <p class="text-muted">
+                        Start by adding your first food category.
+                    </p>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Add Category
+                    </a>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById("categorySearch");
+        const tableRows = document.querySelectorAll("#categoryTable tbody tr");
+        const noResults = document.getElementById("noResults");
+
+        searchInput.addEventListener("input", function() {
+            const searchValue = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            tableRows.forEach(row => {
+                const rowText = row.innerText.toLowerCase();
+                const isVisible = rowText.includes(searchValue);
+
+                row.style.display = isVisible ? "" : "none";
+
+                if (isVisible) {
+                    visibleCount++;
+                }
+            });
+
+            noResults.classList.toggle(
+                "d-none",
+                visibleCount !== 0 || searchValue === ""
+            );
+        });
+    </script>
+}

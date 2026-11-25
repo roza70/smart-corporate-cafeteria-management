@@ -1,0 +1,464 @@
+﻿@model IEnumerable<smart_corporate_cafeteria_management.Models.FoodItem>
+
+@{
+    ViewData["Title"] = "Food Items";
+    var categories = ViewBag.Categories as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+
+<div class="container-fluid py-4 food-page">
+
+    <!-- PAGE HEADER -->
+    <div class="food-page-header mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="food-eyebrow mb-2">
+                    KITCHEN MANAGEMENT / MENU SETUP
+                </div>
+
+                <h2 class="fw-bold mb-2">Food Items</h2>
+
+                <p class="text-muted mb-0">
+                    Organize your cafeteria food collection and manage menu ingredients.
+                </p>
+            </div>
+
+            <a asp-action="Create"
+               class="btn btn-success px-4 py-3">
+                <i class="bi bi-plus-circle me-2"></i>
+                Add Food Item
+            </a>
+        </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4">
+            <i class="bi bi-check-circle me-2"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="food-summary-card h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small fw-semibold">TOTAL FOOD ITEMS</div>
+                            <h2 class="fw-bold mt-2 mb-1" id="totalCount">@Model.Count()</h2>
+                            <small class="text-muted">Matching records</small>
+                        </div>
+                        <div class="food-summary-icon food-icon-green">
+                            <i class="bi bi-egg-fried"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="food-summary-card h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small fw-semibold">ACTIVE ITEMS</div>
+                            <h2 class="fw-bold text-success mt-2 mb-1" id="activeCount">
+                                @Model.Count(f => f.IsActive)
+                            </h2>
+                            <small class="text-muted">Available for menu selection</small>
+                        </div>
+                        <div class="food-summary-icon food-icon-orange">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="food-summary-card h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small fw-semibold">INACTIVE ITEMS</div>
+                            <h2 class="fw-bold text-secondary mt-2 mb-1" id="inactiveCount">
+                                @Model.Count(f => !f.IsActive)
+                            </h2>
+                            <small class="text-muted">Currently unavailable</small>
+                        </div>
+                        <div class="food-summary-icon food-icon-gray">
+                            <i class="bi bi-pause-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SEARCH AND FILTERS -->
+    <div class="food-filter-panel p-3 p-md-4 mb-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h6 class="fw-bold mb-1">
+                    <i class="bi bi-sliders me-2 text-success"></i>
+                    Search & Filters
+                </h6>
+                <small class="text-muted">
+                    Find food items instantly.
+                </small>
+            </div>
+
+            <span class="badge rounded-pill text-success"
+                  style="background:#e8f2eb;">
+                <i class="bi bi-lightning-charge-fill me-1"></i>
+                Live Search
+            </span>
+        </div>
+
+        <div class="row g-3 align-items-end">
+
+            <div class="col-lg-5 col-md-6">
+                <label class="form-label small fw-semibold">Search Food Items</label>
+
+                <div class="food-search-wrap">
+                    <i class="bi bi-search food-search-icon"></i>
+
+                    <input type="text"
+                           id="foodSearch"
+                           class="form-control"
+                           placeholder="Type food name, category or description..."
+                           autocomplete="off" />
+                </div>
+
+                <small class="text-muted">
+                    Results appear automatically while typing.
+                </small>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label small fw-semibold">Food Category</label>
+
+                <select id="categoryFilter" class="form-select">
+                    <option value="">All Categories</option>
+
+                    @if (categories != null)
+                    {
+                        foreach (var category in categories)
+                        {
+                            <option value="@category.Value">@category.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <label class="form-label small fw-semibold">Status</label>
+
+                <select id="statusFilter" class="form-select">
+                    <option value="">All Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <button type="button"
+                        id="clearFilters"
+                        class="btn btn-outline-success w-100 py-2">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>
+                    Reset
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOD ITEM DIRECTORY -->
+    <div class="food-table-card">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 px-4 py-3 border-bottom">
+
+            <div>
+                <h5 class="fw-bold mb-1">Food Item Directory</h5>
+                <small class="text-muted">
+                    View and manage your cafeteria food collection.
+                </small>
+            </div>
+
+            <span class="food-result-count" id="showingCount">
+                Showing @Model.Count() food item(s)
+            </span>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table food-table align-middle mb-0">
+
+                <thead>
+                    <tr>
+                        <th class="ps-4">#</th>
+                        <th>FOOD ITEM</th>
+                        <th>CATEGORY</th>
+                        <th>DESCRIPTION</th>
+                        <th>STATUS</th>
+                        <th class="text-end pe-4">ACTIONS</th>
+                    </tr>
+                </thead>
+
+                <tbody id="foodItemTable">
+
+                    @foreach (var item in Model)
+                    {
+                        <tr class="food-item-row"
+                            data-search="@($"{item.FoodName} {item.FoodCategory?.CategoryName} {item.Description}")"
+                            data-category="@item.CategoryID"
+                            data-status="@(item.IsActive ? "Active" : "Inactive")">
+
+                            <td class="ps-4 text-muted serial-number"></td>
+
+                            <td>
+                                <div class="food-name-cell">
+                                    <div class="food-name-icon">
+                                        <i class="bi bi-egg-fried"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="fw-bold">@item.FoodName</div>
+                                        <small class="text-muted">
+                                            ID: @item.FoodItemId
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="food-category-badge">
+                                    @(item.FoodCategory?.CategoryName ?? "Uncategorized")
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="text-muted small">
+                                    @(string.IsNullOrWhiteSpace(item.Description)
+                                        ? "No description"
+                                        : item.Description)
+                                </span>
+                            </td>
+
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                                        <i class="bi bi-check-circle-fill me-1"></i>
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-2">
+                                        <i class="bi bi-pause-circle-fill me-1"></i>
+                                        Inactive
+                                    </span>
+                                }
+                            </td>
+
+                            <td class="text-end pe-4">
+                                <div class="d-flex justify-content-end gap-2">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.FoodItemId"
+                                       class="btn btn-sm btn-outline-info food-action-btn"
+                                       title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.FoodItemId"
+                                       class="btn btn-sm btn-outline-primary food-action-btn"
+                                       title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+
+                                    <form asp-action="ToggleStatus"
+                                          asp-route-id="@item.FoodItemId"
+                                          method="post"
+                                          class="d-inline">
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="btn btn-sm @(item.IsActive ? "btn-outline-warning" : "btn-outline-success") food-action-btn"
+                                                title="@(item.IsActive ? "Deactivate" : "Activate")">
+                                            <i class="bi @(item.IsActive ? "bi-pause-circle" : "bi-play-circle")"></i>
+                                        </button>
+                                    </form>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@item.FoodItemId"
+                                       class="btn btn-sm btn-outline-danger food-action-btn"
+                                       title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+
+                    <!-- NO RESULTS -->
+                    <tr id="noResults" style="display:none;">
+                        <td colspan="6">
+                            <div class="food-empty-state">
+                                <div class="food-empty-icon">
+                                    <i class="bi bi-search"></i>
+                                </div>
+                                <h6 class="fw-bold">No Food Items Found</h6>
+                                <p class="text-muted small mb-0">
+                                    Try another search term or change your filters.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6">
+                                <div class="food-empty-state">
+                                    <div class="food-empty-icon">
+                                        <i class="bi bi-egg-fried"></i>
+                                    </div>
+                                    <h6 class="fw-bold">No Food Items Available</h6>
+                                    <p class="text-muted small mb-3">
+                                        Start by adding your first food item.
+                                    </p>
+                                    <a asp-action="Create" class="btn btn-success">
+                                        <i class="bi bi-plus-lg me-1"></i>
+                                        Add Food Item
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="px-4 py-3 border-top">
+            <small class="text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                Food item records are updated from your cafeteria database.
+            </small>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- LIVE SEARCH -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const searchInput = document.getElementById("foodSearch");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const statusFilter = document.getElementById("statusFilter");
+        const clearButton = document.getElementById("clearFilters");
+
+        const rows = document.querySelectorAll(".food-item-row");
+        const noResults = document.getElementById("noResults");
+
+        const totalCount = document.getElementById("totalCount");
+        const activeCount = document.getElementById("activeCount");
+        const inactiveCount = document.getElementById("inactiveCount");
+        const showingCount = document.getElementById("showingCount");
+
+        function filterFoodItems() {
+
+            const searchText = searchInput.value.trim().toLowerCase();
+            const selectedCategory = categoryFilter.value;
+            const selectedStatus = statusFilter.value;
+
+            let visibleTotal = 0;
+            let visibleActive = 0;
+            let visibleInactive = 0;
+
+            rows.forEach(function(row) {
+
+                const searchableText = row.dataset.search.toLowerCase();
+                const category = row.dataset.category;
+                const status = row.dataset.status;
+
+                const matchesSearch = searchableText.includes(searchText);
+
+                const matchesCategory =
+                    selectedCategory === "" ||
+                    category === selectedCategory;
+
+                const matchesStatus =
+                    selectedStatus === "" ||
+                    status === selectedStatus;
+
+                const isVisible =
+                    matchesSearch && matchesCategory && matchesStatus;
+
+                row.style.display = isVisible ? "" : "none";
+
+                if (isVisible) {
+
+                    visibleTotal++;
+
+                    if (status === "Active") {
+                        visibleActive++;
+                    } else {
+                        visibleInactive++;
+                    }
+
+                    row.querySelector(".serial-number").textContent =
+                        visibleTotal;
+                }
+            });
+
+            totalCount.textContent = visibleTotal;
+            activeCount.textContent = visibleActive;
+            inactiveCount.textContent = visibleInactive;
+
+            showingCount.textContent =
+                "Showing " + visibleTotal + " food item(s)";
+
+            noResults.style.display =
+                visibleTotal === 0 && rows.length > 0 ? "" : "none";
+        }
+
+        searchInput.addEventListener("input", filterFoodItems);
+        categoryFilter.addEventListener("change", filterFoodItems);
+        statusFilter.addEventListener("change", filterFoodItems);
+
+        clearButton.addEventListener("click", function() {
+            searchInput.value = "";
+            categoryFilter.value = "";
+            statusFilter.value = "";
+            filterFoodItems();
+        });
+
+        filterFoodItems();
+
+    });
+</script>

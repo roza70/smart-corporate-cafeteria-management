@@ -4,60 +4,140 @@
     ViewData["Title"] = "Add Department";
 }
 
-<h1>Add New Department</h1>
+<div class="container-fluid py-4">
 
-<hr />
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
 
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create" method="post">
+        <div>
+            <h2 class="fw-bold mb-1">Add New Department</h2>
+            <p class="text-muted mb-0">
+                Create a new department in your organization.
+            </p>
+        </div>
 
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger"></div>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Departments
+        </a>
 
-            <div class="form-group mb-3">
-                <label asp-for="DepartmentName"
-                       class="control-label">
-                    Department Name
-                </label>
-
-                <input asp-for="DepartmentName"
-                       class="form-control"
-                       placeholder="Enter department name" />
-
-                <span asp-validation-for="DepartmentName"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Description"
-                       class="control-label">
-                    Description
-                </label>
-
-                <textarea asp-for="Description"
-                          class="form-control"
-                          rows="3"
-                          placeholder="Enter department description"></textarea>
-
-                <span asp-validation-for="Description"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <button type="submit"
-                        class="btn btn-primary">
-                    Save Department
-                </button>
-
-                <a asp-action="Index"
-                   class="btn btn-secondary">
-                    Back to List
-                </a>
-            </div>
-
-        </form>
     </div>
+
+    <div class="row">
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <!-- Card Header -->
+                <div class="card-header bg-white border-0 px-4 pt-4">
+
+                    <div class="d-flex align-items-center">
+
+                        <div class="rounded-3 bg-primary bg-opacity-10 p-3 me-3">
+                            <i class="bi bi-diagram-3 fs-3 text-primary"></i>
+                        </div>
+
+                        <div>
+                            <h5 class="fw-bold mb-1">
+                                Department Information
+                            </h5>
+
+                            <small class="text-muted">
+                                Enter the department details below.
+                            </small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-action="Create" method="post">
+
+                        <!-- Validation Summary -->
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger"
+                             role="alert"></div>
+
+                        <!-- Department Name -->
+                        <div class="mb-4">
+
+                            <label asp-for="DepartmentName"
+                                   class="form-label fw-semibold">
+
+                                Department Name
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <input asp-for="DepartmentName"
+                                   class="form-control form-control-lg"
+                                   placeholder="Enter department name" />
+
+                            <span asp-validation-for="DepartmentName"
+                                  class="text-danger small"></span>
+
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+
+                            <label asp-for="Description"
+                                   class="form-label fw-semibold">
+
+                                Description
+
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Describe the department's responsibilities..."></textarea>
+
+                            <span asp-validation-for="Description"
+                                  class="text-danger small"></span>
+
+                            <small class="text-muted">
+                                Provide a short description of this department.
+                            </small>
+
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a asp-action="Index"
+                               class="btn btn-light border px-4">
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary px-4">
+
+                                <i class="bi bi-check-circle me-2"></i>
+                                Save Department
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div class="text-muted small mt-3">
+                <i class="bi bi-info-circle me-1"></i>
+                Department Name is required.
+            </div>
+
+        </div>
+    </div>
+
 </div>
 
 @section Scripts {

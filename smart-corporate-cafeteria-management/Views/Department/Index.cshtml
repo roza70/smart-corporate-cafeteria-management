@@ -1,50 +1,373 @@
 ﻿@model IEnumerable<smart_corporate_cafeteria_management.Models.Department>
 
 @{
-    ViewData["Title"] = "Department List";
+    ViewData["Title"] = "Department Management";
+
+    var departments = Model?.ToList()
+        ?? new List<smart_corporate_cafeteria_management.Models.Department>();
+
+    var totalDepartments = departments.Count;
+
+    var totalEmployees = departments.Sum(d => d.Employees?.Count ?? 0);
 }
 
-<h1>Department Management</h1>
+<div class="container-fluid py-4">
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">
-        Add New Department
-    </a>
-</p>
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Department ID</th>
-            <th>Department Name</th>
-            <th>Description</th>
-            <th>Employee Count</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+        <div>
+            <h2 class="fw-bold mb-1">Department Management</h2>
+            <p class="text-muted mb-0">
+                Manage departments and their assigned employees.
+            </p>
+        </div>
 
-    <tbody>
-        @foreach (var department in Model)
+        <a asp-action="Create" class="btn btn-primary px-4">
+            <i class="bi bi-plus-circle me-2"></i>
+            Add New Department
+        </a>
+
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <p class="text-muted mb-2">
+                                Total Departments
+                            </p>
+
+                            <h2 class="fw-bold mb-0">
+                                @totalDepartments
+                            </h2>
+                        </div>
+
+                        <div class="rounded-3 bg-primary bg-opacity-10 p-3">
+                            <i class="bi bi-diagram-3 fs-3 text-primary"></i>
+                        </div>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Registered departments
+                    </small>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <p class="text-muted mb-2">
+                                Assigned Employees
+                            </p>
+
+                            <h2 class="fw-bold mb-0">
+                                @totalEmployees
+                            </h2>
+                        </div>
+
+                        <div class="rounded-3 bg-success bg-opacity-10 p-3">
+                            <i class="bi bi-people fs-3 text-success"></i>
+                        </div>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Employees across all departments
+                    </small>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <p class="text-muted mb-2">
+                                Active Department Records
+                            </p>
+
+                            <h2 class="fw-bold mb-0">
+                                @departments.Count
+                            </h2>
+                        </div>
+
+                        <div class="rounded-3 bg-warning bg-opacity-10 p-3">
+                            <i class="bi bi-building fs-3 text-warning"></i>
+                        </div>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Available department records
+                    </small>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Department Directory -->
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-header bg-white border-0 p-4">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                <div>
+                    <h5 class="fw-bold mb-1">Department Directory</h5>
+
+                    <p class="text-muted small mb-0">
+                        View and manage all registered departments.
+                    </p>
+                </div>
+
+                <div style="max-width: 300px; width: 100%;">
+
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+
+                        <input type="text"
+                               id="departmentSearch"
+                               class="form-control bg-light border-start-0"
+                               placeholder="Search departments..." />
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0"
+                       id="departmentTable">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th class="px-4 py-3">Department ID</th>
+                            <th class="py-3">Department Name</th>
+                            <th class="py-3">Description</th>
+                            <th class="py-3">Employees</th>
+                            <th class="py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var department in departments)
+                        {
+                            <tr>
+
+                                <td class="px-4 fw-semibold">
+                                    #@department.DepartmentId
+                                </td>
+
+                                <td>
+                                    <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@department.DepartmentId"
+                                           class="btn btn-sm btn-info text-white"
+                                           title="View Department Details">
+                                            <i class="bi bi-eye me-1"></i>
+                                            Details
+                                        </a>
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@department.DepartmentId"
+                                           class="btn btn-sm btn-warning"
+                                           title="Edit Department">
+                                            <i class="bi bi-pencil-square me-1"></i>
+                                            Edit
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@department.DepartmentId"
+                                           class="btn btn-sm btn-danger"
+                                           title="Delete Department">
+                                            <i class="bi bi-trash me-1"></i>
+                                            Delete
+                                        </a>
+
+                                    </div>
+                                </td>
+
+
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(department.Description))
+                                    {
+                                        <span class="text-muted">
+                                            @department.Description
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted fst-italic">
+                                            No description
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2">
+                                        <i class="bi bi-people me-1"></i>
+                                        @(department.Employees?.Count ?? 0)
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@department.DepartmentId"
+                                           class="btn btn-sm btn-outline-info"
+                                           title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@department.DepartmentId"
+                                           class="btn btn-sm btn-outline-warning"
+                                           title="Edit Department">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@department.DepartmentId"
+                                           class="btn btn-sm btn-outline-danger"
+                                           title="Delete Department">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+                <div id="noDepartmentsFound"
+                     class="text-center py-5"
+                     style="display: none;">
+
+                    <i class="bi bi-search fs-1 text-muted"></i>
+
+                    <h6 class="fw-bold mt-3">
+                        No departments found
+                    </h6>
+
+                    <p class="text-muted mb-0">
+                        Try searching with a different keyword.
+                    </p>
+
+                </div>
+
+                @if (!departments.Any())
+                {
+                    <div class="text-center py-5">
+
+                        <i class="bi bi-diagram-3 fs-1 text-muted"></i>
+
+                        <h5 class="fw-bold mt-3">
+                            No Departments Yet
+                        </h5>
+
+                        <p class="text-muted">
+                            Start by adding your first department.
+                        </p>
+
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            Add Department
+                        </a>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+        @if (departments.Any())
         {
-            <tr>
-                <td>@department.DepartmentId</td>
-                <td>@department.DepartmentName</td>
-                <td>@department.Description</td>
-                <td>@(department.Employees?.Count ?? 0)</td>
-                <td>
-                    <a asp-action="Details"
-                       asp-route-id="@department.DepartmentId"
-                       class="btn btn-info btn-sm">Details</a>
-
-                    <a asp-action="Edit"
-                       asp-route-id="@department.DepartmentId"
-                       class="btn btn-warning btn-sm">Edit</a>
-
-                    <a asp-action="Delete"
-                       asp-route-id="@department.DepartmentId"
-                       class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
+            <div class="card-footer bg-white border-0 px-4 py-3">
+                <small class="text-muted">
+                    Showing @totalDepartments department records.
+                </small>
+            </div>
         }
-    </tbody>
-</table>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const searchInput = document.getElementById("departmentSearch");
+            const table = document.getElementById("departmentTable");
+            const noResults = document.getElementById("noDepartmentsFound");
+
+            if (!searchInput || !table) return;
+
+            const rows = table.querySelectorAll("tbody tr");
+
+            searchInput.addEventListener("input", function() {
+
+                const searchValue = this.value.toLowerCase().trim();
+                let visibleCount = 0;
+
+                rows.forEach(function(row) {
+
+                    const rowText = row.innerText.toLowerCase();
+                    const isMatch = rowText.includes(searchValue);
+
+                    row.style.display = isMatch ? "" : "none";
+
+                    if (isMatch) {
+                        visibleCount++;
+                    }
+
+                });
+
+                if (noResults) {
+                    noResults.style.display =
+                        visibleCount === 0 ? "block" : "none";
+                }
+
+                table.style.display =
+                    visibleCount === 0 ? "none" : "table";
+
+            });
+
+        });
+    </script>
+}

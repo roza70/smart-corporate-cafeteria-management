@@ -1,0 +1,288 @@
+﻿@model smart_corporate_cafeteria_management.Models.FoodItem
+
+@{
+    ViewData["Title"] = "Add Food Item";
+}
+
+<div class="container-fluid py-4 food-page">
+
+    <!-- BACKGROUND FOOD DECORATIONS -->
+    <div class="create-food-decoration carrot">🥕</div>
+    <div class="create-food-decoration tomato">🍅</div>
+
+
+    <!-- PAGE HEADER -->
+    <div class="food-page-header mb-4">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+            <div>
+                <div class="food-eyebrow mb-2">
+                    KITCHEN MANAGEMENT / FOOD ITEMS
+                </div>
+
+                <h2 class="fw-bold mb-2">Add New Food Item</h2>
+
+                <p class="text-muted mb-0">
+                    Add fresh food items to your corporate cafeteria collection.
+                </p>
+            </div>
+
+            <a asp-action="Index"
+               class="btn btn-outline-success px-4 py-2">
+
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to Food Items
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOD COLLECTION HIGHLIGHT -->
+    <div class="food-collection-highlight mb-4">
+
+        <div class="food-highlight-icon">
+            🥗
+        </div>
+
+        <div>
+            <span class="food-highlight-label">
+                FRESH FOOD COLLECTION
+            </span>
+
+            <h5 class="fw-bold mb-1">
+                Build Your Cafeteria Menu
+            </h5>
+
+            <p class="mb-0">
+                Organize rice, vegetables, dal, meat, fish and salad items
+                for your daily employee lunch.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- MAIN FORM -->
+    <div class="row justify-content-center">
+
+        <div class="col-xl-8 col-lg-10 food-form-wrapper">
+
+            <!-- CHILLI ABOVE THE FORM BOX -->
+            <div class="create-food-decoration chilli">🌶️</div>
+
+
+            <!-- FOOD ITEM FORM CARD -->
+            <div class="food-table-card">
+
+                <!-- FORM HEADER -->
+                <div class="px-4 py-4 border-bottom">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="food-summary-icon food-icon-green">
+                            <i class="bi bi-egg-fried"></i>
+                        </div>
+
+                        <div>
+                            <h5 class="fw-bold mb-1">
+                                Food Item Information
+                            </h5>
+
+                            <small class="text-muted">
+                                Enter the details below to create a food item.
+                            </small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FORM BODY -->
+                <div class="p-4">
+
+                    <form asp-action="Create" method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger"
+                             role="alert">
+                        </div>
+
+
+                        <!-- FOOD NAME -->
+                        <div class="mb-4">
+
+                            <label asp-for="FoodName"
+                                   class="form-label fw-semibold">
+
+                                Food Name
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <input asp-for="FoodName"
+                                   class="form-control"
+                                   placeholder="Example: Plain Rice, Chicken Curry..." />
+
+                            <span asp-validation-for="FoodName"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+
+                        <!-- FOOD CATEGORY -->
+                        <div class="mb-4">
+
+                            <label asp-for="CategoryID"
+                                   class="form-label fw-semibold">
+
+                                Food Category
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <select asp-for="CategoryID"
+                                    asp-items="ViewBag.CategoryID"
+                                    class="form-select">
+
+                                <option value="">
+                                    Select a food category
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="CategoryID"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+                        <div class="mb-4">
+
+                            <label asp-for="Description"
+                                   class="form-label fw-semibold">
+
+                                Description
+
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Write a short description about this food item..."></textarea>
+
+                            <span asp-validation-for="Description"
+                                  class="text-danger small">
+                            </span>
+
+                            <small class="text-muted">
+                                Optional: Add ingredients or a short food description.
+                            </small>
+
+                        </div>
+
+
+                        <!-- ACTIVE STATUS -->
+                        <div class="food-status-panel p-3 rounded-3 mb-4">
+
+                            <div class="form-check form-switch">
+
+                                <input asp-for="IsActive"
+                                       class="form-check-input"
+                                       type="checkbox"
+                                       role="switch" />
+
+                                <label asp-for="IsActive"
+                                       class="form-check-label fw-semibold">
+
+                                    Active Food Item
+
+                                </label>
+
+                            </div>
+
+                            <small class="text-muted ms-5">
+                                Active items can be selected for daily menus.
+                            </small>
+
+                        </div>
+
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="d-flex flex-wrap justify-content-end gap-2 pt-3 border-top">
+
+                            <a asp-action="Index"
+                               class="btn btn-light border px-4 py-2">
+
+                                Cancel
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success px-4 py-2">
+
+                                <i class="bi bi-check-circle me-2"></i>
+                                Save Food Item
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- KITCHEN TIP -->
+            <div class="food-tip-card mt-4">
+
+                <div class="food-tip-icon">
+                    💡
+                </div>
+
+                <div>
+                    <h6 class="fw-bold mb-1">
+                        Kitchen Tip
+                    </h6>
+
+                    <p class="mb-0">
+                        Use clear food names and select the correct category
+                        to make daily menu planning easier.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- INFORMATION -->
+            <div class="text-muted small mt-3">
+
+                <i class="bi bi-info-circle me-1"></i>
+
+                New food items are Active by default.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

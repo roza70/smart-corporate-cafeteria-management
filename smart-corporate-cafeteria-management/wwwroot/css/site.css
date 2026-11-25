@@ -1,31 +1,768 @@
+
+/* =========================================
+   SMART CORPORATE CAFETERIA
+   MODERN FOOD-TECH DESIGN SYSTEM
+========================================= */
+
+
+/* =========================================
+   1. GLOBAL VARIABLES
+========================================= */
+
+:root {
+    --food-primary: #245c43;
+    --food-primary-dark: #194631;
+    --food-primary-light: #e8f2eb;
+    --food-accent: #f29b38;
+    --food-accent-light: #fff1df;
+    --food-bg: #f8f8f2;
+    --food-surface: #ffffff;
+    --food-text: #26352c;
+    --food-muted: #7c887f;
+    --food-border: #e8ede7;
+    --food-success: #278653;
+    --food-danger: #d9534f;
+    --food-radius: 16px;
+    --food-shadow: 0 5px 22px rgba(32, 70, 48, 0.06);
+}
+
+
+/* =========================================
+   2. BASE
+========================================= */
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: var(--food-bg);
+    color: var(--food-text);
+    font-family: "Segoe UI", Arial, sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+
+/* =========================================
+   3. TYPOGRAPHY
+========================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--food-text);
+    letter-spacing: -0.3px;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+p {
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   4. BUTTONS
+========================================= */
+
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-success {
+    background-color: var(--food-primary);
+    border-color: var(--food-primary);
+}
+
+    .btn-success:hover {
+        background-color: var(--food-primary-dark);
+        border-color: var(--food-primary-dark);
+        transform: translateY(-1px);
+    }
+
+.btn-outline-success {
+    color: var(--food-primary);
+    border-color: var(--food-primary);
+}
+
+    .btn-outline-success:hover {
+        background-color: var(--food-primary);
+        border-color: var(--food-primary);
+    }
+
+
+/* =========================================
+   5. FORM CONTROLS
+========================================= */
+
+.form-control,
+.form-select {
+    min-height: 44px;
+    border: 1px solid var(--food-border);
+    border-radius: 10px;
+    background-color: #fff;
+    color: var(--food-text);
+    transition: all 0.2s ease;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--food-primary);
+        box-shadow: 0 0 0 3px rgba(36, 92, 67, 0.12);
+    }
+
+    .form-control::placeholder {
+        color: #a1aaa3;
+    }
+
+
+/* =========================================
+   6. CARDS
+========================================= */
+
+.card {
+    border-radius: var(--food-radius);
+    border-color: var(--food-border);
+    box-shadow: var(--food-shadow);
+}
+
+.card-header,
+.card-footer {
+    background-color: var(--food-surface);
+}
+
+
+/* =========================================
+   7. TABLES
+========================================= */
+
+.table {
+    color: var(--food-text);
+}
+
+    .table thead th {
+        background-color: #f3f6f1;
+        color: #647268;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--food-border);
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    .table tbody td {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        border-bottom-color: #edf0eb;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+        .table tbody tr:hover {
+            background-color: #f8faf6;
+        }
+
+
+/* =========================================
+   8. BADGES
+========================================= */
+
+.badge {
+    font-weight: 600;
+    letter-spacing: 0.1px;
+}
+
+
+/* =========================================
+   9. ALERTS
+========================================= */
+
+.alert {
+    border: none;
+    border-radius: 12px;
+}
+
+
+/* =========================================
+   10. LINKS
+========================================= */
+
+a {
+    text-decoration: none;
+}
+
+
+/* =========================================
+   11. ACCESSIBILITY
+========================================= */
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    outline: none;
+}
+
+
+/* =========================================
+   12. FORM FLOATING
+========================================= */
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+
+
+/* =========================================
+   13. FOOD PAGE BACKGROUND
+========================================= */
+
+.food-page {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 100vh;
+    background: radial-gradient( circle at 10% 15%, rgba(242, 155, 56, 0.08), transparent 180px ), radial-gradient( circle at 90% 45%, rgba(67, 130, 83, 0.09), transparent 230px ), radial-gradient( circle at 12% 90%, rgba(242, 155, 56, 0.07), transparent 180px ), #f8f8f2;
+}
+
+    /* Disable all old pseudo-element decorations */
+
+    .food-page::before,
+    .food-page::after,
+    .food-page-header::before,
+    .food-page-header::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    /* Keep normal page content above background */
+
+    .food-page > *:not(.create-food-decoration) {
+        position: relative;
+        z-index: 1;
+    }
+
+
+/* =========================================
+   14. FOOD PAGE HEADER
+========================================= */
+
+.food-page-header {
+    padding: 28px;
+    border-radius: 20px;
+    background: radial-gradient( circle at 85% 20%, rgba(255, 255, 255, 0.8), transparent 150px ), linear-gradient( 115deg, #eaf3e9, #fff7e9 );
+    border: 1px solid #e3ecdf;
+    min-height: 155px;
+}
+
+    .food-page-header > * {
+        position: relative;
+        z-index: 1;
+    }
+
+.food-eyebrow {
+    color: var(--food-primary);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1.3px;
+}
+
+
+/* =========================================
+   15. FOOD SUMMARY CARDS
+========================================= */
+
+.food-summary-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--food-border);
+    border-radius: 18px;
+    background: radial-gradient( circle at 100% 0%, rgba(232, 242, 235, 0.65), transparent 120px ), #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .food-summary-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(32, 70, 48, 0.10);
+    }
+
+
+/* Summary Icons */
+
+.food-summary-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    font-size: 21px;
+}
+
+.food-icon-green {
+    background: #e8f2eb;
+    color: #245c43;
+}
+
+.food-icon-orange {
+    background: #fff0df;
+    color: #df8424;
+}
+
+.food-icon-gray {
+    background: #eef0f1;
+    color: #68747c;
+}
+
+
+/* =========================================
+   16. FOOD FILTER PANEL
+========================================= */
+
+.food-filter-panel {
+    border: 1px solid var(--food-border);
+    border-radius: 18px;
+    background: radial-gradient( circle at 100% 0%, rgba(255, 241, 223, 0.5), transparent 150px ), #ffffff;
+}
+
+
+/* Search */
+
+.food-search-wrap {
+    position: relative;
+}
+
+    .food-search-wrap .form-control {
+        min-height: 48px;
+        padding-left: 44px;
+        border-radius: 12px !important;
+    }
+
+.food-search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--food-primary);
+    z-index: 5;
+}
+
+
+/* =========================================
+   17. FOOD TABLE
+========================================= */
+
+.food-table-card {
+    border: 1px solid var(--food-border);
+    border-radius: 18px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.food-table thead th {
+    background: #f1f6ef;
+    color: #617367;
+    font-size: 0.74rem;
+    letter-spacing: 0.7px;
+    white-space: nowrap;
+}
+
+.food-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* Food Name */
+
+.food-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.food-name-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #f1f6ef;
+    color: var(--food-primary);
+    font-size: 17px;
+}
+
+
+/* Category Badge */
+
+.food-category-badge {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 30px;
+    background: #f0f5ed;
+    color: #42664c;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+
+/* Action Buttons */
+
+.food-action-btn {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+
+/* =========================================
+   18. EMPTY STATE
+========================================= */
+
+.food-empty-state {
+    padding: 45px 15px;
+    text-align: center;
+}
+
+.food-empty-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    background: #edf5ec;
+    color: var(--food-primary);
+    font-size: 28px;
+}
+
+.food-result-count {
+    color: var(--food-muted);
+    font-size: 0.82rem;
+}
+
+
+/* =========================================
+   19. FOOD COLLECTION HIGHLIGHT
+========================================= */
+
+.food-collection-highlight {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 24px;
+    border-radius: 18px;
+    border: 1px solid #e4eddf;
+    background: linear-gradient( 110deg, #edf6eb, #fff5e7 );
+    position: relative;
+    z-index: 1;
+}
+
+.food-highlight-icon {
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: white;
+    font-size: 30px;
+}
+
+.food-highlight-label {
+    display: block;
+    color: var(--food-primary);
+    font-size: 0.70rem;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    margin-bottom: 5px;
+}
+
+.food-collection-highlight h5 {
+    color: #244c38;
+}
+
+.food-collection-highlight p {
+    color: #718078;
+    font-size: 0.88rem;
+}
+
+
+/* =========================================
+   20. FOOD STATUS PANEL
+========================================= */
+
+.food-status-panel {
+    background: #f3f7f1;
+    border: 1px solid #e5ede2;
+}
+
+
+/* =========================================
+   21. KITCHEN TIP
+========================================= */
+
+.food-tip-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 17px 20px;
+    border: 1px solid #f2e4ce;
+    border-radius: 15px;
+    background: #fff9ef;
+    position: relative;
+    z-index: 1;
+}
+
+.food-tip-icon {
+    font-size: 25px;
+}
+
+.food-tip-card h6 {
+    color: #684d2c;
+}
+
+.food-tip-card p {
+    color: #847866;
+    font-size: 0.86rem;
+}
+
+
+/* =========================================
+   22. FOOD ITEM FORM CARD
+========================================= */
+
+.food-page .food-table-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 18px;
+}
+
+
+/* =========================================
+   23. FOOD BACKGROUND DECORATIONS
+========================================= */
+
+/* Common decoration settings */
+
+.food-page .create-food-decoration {
+    position: absolute;
+    display: block;
+    visibility: visible;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+
+/* CARROT - LEFT BOTTOM */
+
+.food-page > .create-food-decoration.carrot {
+    top: 850px;
+    left: 35px;
+    font-size: 110px;
+    opacity: 0.22;
+    transform: rotate(30deg);
+}
+
+
+/* TOMATO - RIGHT SIDE */
+
+.food-page > .create-food-decoration.tomato {
+    top: 320px;
+    right: 22px;
+    font-size: 150px;
+    opacity: 0.22;
+    transform: rotate(12deg);
+}
+
+
+/* =========================================
+   24. CHILLI - ABOVE ADD FOOD ITEM BOX
+========================================= */
+
+/* Form wrapper */
+
+.food-page .food-form-wrapper {
+    position: relative;
+    isolation: isolate;
+}
+
+    /* Chilli sits outside the white form card,
+   at its upper-right corner */
+
+    .food-page .food-form-wrapper > .create-food-decoration.chilli {
+        position: absolute !important;
+        top: -35px !important;
+        right: 18px !important;
+        left: auto !important;
+        display: block !important;
+        visibility: visible !important;
+        font-size: 65px !important;
+        line-height: 1 !important;
+        opacity: 0.28 !important;
+        transform: rotate(-25deg) !important;
+        z-index: 2 !important;
+        pointer-events: none !important;
+    }
+
+    /* Form card */
+
+    .food-page .food-form-wrapper .food-table-card {
+        position: relative;
+        z-index: 1;
+        border-radius: 18px;
+    }
+
+
+/* =========================================
+   25. RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 767px) {
+
+    html {
+        font-size: 14px;
+    }
+
+    body {
+        margin-bottom: 40px;
+    }
+
+    .card-body {
+        padding: 1.1rem;
+    }
+
+    .table {
+        min-width: 750px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .food-page-header {
+        padding: 20px;
+    }
+
+
+    /* Mobile Carrot */
+
+    .food-page > .create-food-decoration.carrot {
+        top: 900px;
+        left: 5px;
+        font-size: 65px;
+    }
+
+
+    /* Mobile Tomato */
+
+    .food-page > .create-food-decoration.tomato {
+        top: 350px;
+        right: 5px;
+        font-size: 88px;
+    }
+
+
+    /* Mobile Chilli */
+
+    .food-page .food-form-wrapper > .create-food-decoration.chilli {
+        top: -25px !important;
+        right: 12px !important;
+        font-size: 43px !important;
+    }
+
+
+    /* Collection highlight */
+
+    .food-collection-highlight {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .food-highlight-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 24px;
+    }
+
+    .food-collection-highlight p {
+        font-size: 0.80rem;
+    }
+
+
+    /* Kitchen tip */
+
+    .food-tip-card {
+        padding: 14px;
+    }
+}
+
+/* =========================================
+   ADD FOOD ITEM - CHILLI POSITION FIX
+========================================= */
+
+.food-page .food-form-wrapper {
+    position: relative !important;
+    isolation: isolate;
+}
+
+    .food-page .food-form-wrapper > .create-food-decoration.chilli {
+        position: absolute !important;
+        top: -42px !important;
+        right: 12px !important;
+        left: auto !important;
+        bottom: auto !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 0.85 !important;
+        font-size: 58px !important;
+        line-height: 1 !important;
+        transform: rotate(-25deg) !important;
+        z-index: 10 !important;
+        pointer-events: none !important;
+    }
+
+    .food-page .food-form-wrapper > .food-table-card {
+        position: relative;
+        z-index: 1;
+    }
+
+/* Mobile */
+@media (max-width: 768px) {
+    .food-page .food-form-wrapper > .create-food-decoration.chilli {
+        top: -30px !important;
+        right: 8px !important;
+        font-size: 42px !important;
+    }
 }

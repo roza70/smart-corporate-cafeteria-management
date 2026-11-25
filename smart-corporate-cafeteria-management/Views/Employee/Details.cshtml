@@ -4,62 +4,99 @@
     ViewData["Title"] = "Employee Details";
 }
 
-<h2>Employee Details</h2>
+<div class="container-fluid py-4">
 
-<hr />
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Employee Details</h2>
+            <p class="text-muted mb-0">
+                View employee information and department details.
+            </p>
+        </div>
 
-<div class="row">
-    <div class="col-md-6">
-
-        <dl class="row">
-
-            <dt class="col-sm-4">
-                Employee ID
-            </dt>
-            <dd class="col-sm-8">
-                @Model.EmployeeId
-            </dd>
-
-            <dt class="col-sm-4">
-                Employee Name
-            </dt>
-            <dd class="col-sm-8">
-                @Model.EmployeeName
-            </dd>
-
-            <dt class="col-sm-4">
-                Email
-            </dt>
-            <dd class="col-sm-8">
-                @Model.Email
-            </dd>
-
-            <dt class="col-sm-4">
-                Phone
-            </dt>
-            <dd class="col-sm-8">
-                @Model.Phone
-            </dd>
-
-            <dt class="col-sm-4">
-                Department
-            </dt>
-            <dd class="col-sm-8">
-                @Model.Department?.DepartmentName
-            </dd>
-
-        </dl>
-
-        <a asp-action="Edit"
-           asp-route-id="@Model.EmployeeId"
-           class="btn btn-primary">
-            Edit
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            Back to Employees
         </a>
-
-        <a asp-action="Index"
-           class="btn btn-secondary">
-            Back to List
-        </a>
-
     </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-primary bg-opacity-10
+                    text-primary d-flex align-items-center
+                    justify-content-center me-3"
+                     style="width:65px;height:65px;">
+                    <span class="fs-3 fw-bold">
+                        @(string.IsNullOrWhiteSpace(Model.EmployeeName)
+                            ? "?"
+                            : Model.EmployeeName.Substring(0, 1).ToUpper())
+                    </span>
+                </div>
+
+                <div>
+                    <h4 class="fw-bold mb-1">
+                        @Model.EmployeeName
+                    </h4>
+                    <span class="text-muted">
+                        Employee ID: @Model.EmployeeId
+                    </span>
+                </div>
+            </div>
+
+            <hr />
+
+            <h5 class="fw-semibold mb-4">Personal Information</h5>
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+                    <label class="text-muted small">Employee ID</label>
+                    <p class="fw-semibold">@Model.EmployeeId</p>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="text-muted small">Employee Name</label>
+                    <p class="fw-semibold">@Model.EmployeeName</p>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="text-muted small">Email Address</label>
+                    <p class="fw-semibold">@Model.Email</p>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="text-muted small">Phone Number</label>
+                    <p class="fw-semibold">@Model.Phone</p>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="text-muted small">Department</label>
+                    <p class="fw-semibold">
+                        @Model.Department?.DepartmentName
+                    </p>
+                </div>
+
+            </div>
+
+            <hr />
+
+            <div class="d-flex gap-2 justify-content-end">
+
+                <a asp-action="Index"
+                   class="btn btn-light border">
+                    Back to List
+                </a>
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.EmployeeId"
+                   class="btn btn-primary">
+                    Edit Employee
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
 </div>

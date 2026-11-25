@@ -1,0 +1,149 @@
+﻿@model smart_corporate_cafeteria_management.Models.FoodCategory
+
+@{
+    ViewData["Title"] = "Add Food Category";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <div class="text-success fw-semibold small mb-1">
+                🥕 CAFETERIA MANAGEMENT / FOOD CATEGORIES
+            </div>
+            <h2 class="fw-bold mb-1">Add Food Category</h2>
+            <p class="text-muted mb-0">
+                Create a new category to organize cafeteria food items.
+            </p>
+        </div>
+
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-3 px-3">
+            <i class="bi bi-arrow-left"></i> Back to Categories
+        </a>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 p-lg-5">
+
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-1">Category Information</h5>
+                        <p class="text-muted small mb-0">
+                            Enter the details of your new food category.
+                        </p>
+                    </div>
+
+                    <form asp-action="Create" method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger rounded-3">
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="CategoryName"
+                                   class="form-label fw-semibold">
+                                Category Name <span class="text-danger">*</span>
+                            </label>
+
+                            <input asp-for="CategoryName"
+                                   class="form-control form-control-lg rounded-3"
+                                   placeholder="e.g. Rice, Salad, Vegetables" />
+
+                            <span asp-validation-for="CategoryName"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description"
+                                   class="form-label fw-semibold">
+                                Description
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      class="form-control rounded-3"
+                                      rows="4"
+                                      placeholder="Write a short description about this food category..."></textarea>
+
+                            <span asp-validation-for="Description"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="d-flex flex-wrap gap-2 justify-content-end">
+                            <a asp-action="Index"
+                               class="btn btn-light border rounded-3 px-4">
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success rounded-3 px-4">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Save Category
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100"
+                 style="background: #f0f8ed;">
+                <div class="card-body p-4">
+
+                    <div class="text-center py-3">
+                        <div style="font-size: 65px;">🥕 🥒</div>
+                        <h5 class="fw-bold mt-3">Fresh Ideas, Better Kitchen!</h5>
+                        <p class="text-muted small">
+                            Organize your cafeteria menu with meaningful
+                            food categories.
+                        </p>
+                    </div>
+
+                    <hr />
+
+                    <h6 class="fw-bold mb-3">Category Examples</h6>
+
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span style="font-size: 24px;">🍚</span>
+                        <span class="fw-medium">Rice</span>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span style="font-size: 24px;">🍗</span>
+                        <span class="fw-medium">Meat and Fish</span>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span style="font-size: 24px;">🥣</span>
+                        <span class="fw-medium">Dal</span>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span style="font-size: 24px;">🥗</span>
+                        <span class="fw-medium">Salad</span>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <span style="font-size: 24px;">🥦</span>
+                        <span class="fw-medium">Vegetables</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

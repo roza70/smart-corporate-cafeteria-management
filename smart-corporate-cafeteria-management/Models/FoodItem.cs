@@ -11,6 +11,10 @@ namespace smart_corporate_cafeteria_management.Models
 
         public string? Description { get; set; }
 
+        // Food Item Status
+        // New Food Items will be Active by default.
+        public bool IsActive { get; set; } = true;
+
         // Relationship with FoodCategory
         public FoodCategory? FoodCategory { get; set; }
     }

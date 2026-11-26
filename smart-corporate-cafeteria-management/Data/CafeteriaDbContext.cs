@@ -1,10 +1,11 @@
 ﻿
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using smart_corporate_cafeteria_management.Models;
 
 namespace smart_corporate_cafeteria_management.Data
 {
-    public class CafeteriaDbContext : DbContext
+    public class CafeteriaDbContext : IdentityDbContext<ApplicationUser>
     {
         public CafeteriaDbContext(
             DbContextOptions<CafeteriaDbContext> options)
@@ -31,20 +32,35 @@ namespace smart_corporate_cafeteria_management.Data
         public DbSet<StaffRole> StaffRoles { get; set; }
         public DbSet<StaffRoleAssignment> StaffRoleAssignments { get; set; }
 
+        // Meal Collection and Daily Token
+        public DbSet<MealCollection> MealCollections { get; set; }
+        public DbSet<MealToken> MealTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Configure ASP.NET Core Identity tables
             base.OnModelCreating(modelBuilder);
 
+            // ApplicationUser - Employee relationship
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne<Employee>()
+                .WithOne()
+                .HasForeignKey<ApplicationUser>(u => u.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ApplicationUser_Employee");
 
-            // =====================================
-            // DEPARTMENT CONFIGURATION
-            // =====================================
+            // ApplicationUser - CafeteriaStaff relationship
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne<CafeteriaStaff>()
+                .WithOne()
+                .HasForeignKey<ApplicationUser>(u => u.StaffID)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ApplicationUser_CafeteriaStaff");
 
+            // Department
             modelBuilder.Entity<Department>(entity =>
             {
                 entity.ToTable("Department");
-
                 entity.HasKey(e => e.DepartmentId);
 
                 entity.Property(e => e.DepartmentId)
@@ -60,15 +76,10 @@ namespace smart_corporate_cafeteria_management.Data
                     .IsUnicode(false);
             });
 
-
-            // =====================================
-            // EMPLOYEE CONFIGURATION
-            // =====================================
-
+            // Employee
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.ToTable("Employee");
-
                 entity.HasKey(e => e.EmployeeId);
 
                 entity.Property(e => e.EmployeeId)
@@ -93,15 +104,10 @@ namespace smart_corporate_cafeteria_management.Data
                     .HasConstraintName("FK_Employee_Department");
             });
 
-
-            // =====================================
-            // FOOD CATEGORY CONFIGURATION
-            // =====================================
-
+            // FoodCategory
             modelBuilder.Entity<FoodCategory>(entity =>
             {
                 entity.ToTable("FoodCategory");
-
                 entity.HasKey(e => e.CategoryID);
 
                 entity.Property(e => e.CategoryName)
@@ -114,15 +120,10 @@ namespace smart_corporate_cafeteria_management.Data
                     .IsUnicode(false);
             });
 
-
-            // =====================================
-            // FOOD ITEM CONFIGURATION
-            // =====================================
-
+            // FoodItem
             modelBuilder.Entity<FoodItem>(entity =>
             {
                 entity.ToTable("FoodItem");
-
                 entity.HasKey(e => e.FoodItemId);
 
                 entity.Property(e => e.FoodItemId)
@@ -140,26 +141,19 @@ namespace smart_corporate_cafeteria_management.Data
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                // Food Item Active / Inactive Status
                 entity.Property(e => e.IsActive)
                     .HasDefaultValue(true)
                     .IsRequired();
 
-                // Relationship with FoodCategory
                 entity.HasOne(e => e.FoodCategory)
                     .WithMany(e => e.FoodItems)
                     .HasForeignKey(e => e.CategoryID);
             });
 
-
-            // =====================================
-            // DAILY MENU CONFIGURATION
-            // =====================================
-
+            // DailyMenu
             modelBuilder.Entity<DailyMenu>(entity =>
             {
                 entity.ToTable("DailyMenu");
-
                 entity.HasKey(e => e.MenuID);
 
                 entity.Property(e => e.MenuDate)
@@ -171,15 +165,10 @@ namespace smart_corporate_cafeteria_management.Data
                     .IsUnicode(false);
             });
 
-
-            // =====================================
-            // DAILY MENU ITEM CONFIGURATION
-            // =====================================
-
+            // DailyMenuItem
             modelBuilder.Entity<DailyMenuItem>(entity =>
             {
                 entity.ToTable("DailyMenuItem");
-
                 entity.HasKey(e => e.MenuItemID);
 
                 entity.HasOne(e => e.DailyMenu)
@@ -195,15 +184,56 @@ namespace smart_corporate_cafeteria_management.Data
                     .HasDatabaseName("UQ_DailyMenuItem_Menu_Food");
             });
 
+            // MealCollection
+            modelBuilder.Entity<MealCollection>(entity =>
+            {
+                entity.ToTable("MealCollections");
+                entity.HasKey(mc => mc.CollectionID);
 
-            // =====================================
-            // CAFETERIA STAFF CONFIGURATION
-            // =====================================
+                entity.HasOne(mc => mc.Employee)
+                    .WithMany()
+                    .HasForeignKey(mc => mc.EmployeeID);
+            });
 
+            // MealToken
+            modelBuilder.Entity<MealToken>(entity =>
+            {
+                entity.ToTable("MealToken");
+                entity.HasKey(e => e.TokenID);
+
+                entity.Property(e => e.TokenNumber)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .IsRequired();
+
+                entity.Property(e => e.TokenDate)
+                    .HasColumnType("date")
+                    .IsRequired();
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .IsRequired();
+
+                entity.Property(e => e.GeneratedAt)
+                    .IsRequired();
+
+                entity.HasOne(e => e.Employee)
+                    .WithMany()
+                    .HasForeignKey(e => e.EmployeeID)
+                    .HasConstraintName("FK_MealToken_Employee");
+
+                entity.HasIndex(e => e.TokenNumber)
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.EmployeeID, e.TokenDate })
+                    .IsUnique();
+            });
+
+            // CafeteriaStaff
             modelBuilder.Entity<CafeteriaStaff>(entity =>
             {
                 entity.ToTable("CafeteriaStaff");
-
                 entity.HasKey(e => e.StaffID);
 
                 entity.Property(e => e.StaffName)
@@ -245,15 +275,10 @@ namespace smart_corporate_cafeteria_management.Data
                     .HasDefaultValue(true);
             });
 
-
-            // =====================================
-            // STAFF ROLE CONFIGURATION
-            // =====================================
-
+            // StaffRole
             modelBuilder.Entity<StaffRole>(entity =>
             {
                 entity.ToTable("StaffRole");
-
                 entity.HasKey(e => e.RoleID);
 
                 entity.Property(e => e.RoleName)
@@ -269,42 +294,30 @@ namespace smart_corporate_cafeteria_management.Data
                     .IsUnicode(false);
             });
 
-
-            // =====================================
-            // STAFF ROLE ASSIGNMENT CONFIGURATION
-            // =====================================
-
+            // StaffRoleAssignment
             modelBuilder.Entity<StaffRoleAssignment>(entity =>
             {
                 entity.ToTable("StaffRoleAssignment");
-
                 entity.HasKey(e => e.AssignmentID);
 
                 entity.HasOne(e => e.CafeteriaStaff)
                     .WithMany(e => e.StaffRoleAssignments)
                     .HasForeignKey(e => e.StaffID)
-                    .HasConstraintName(
-                        "FK_StaffRoleAssignment_CafeteriaStaff");
+                    .HasConstraintName("FK_StaffRoleAssignment_CafeteriaStaff");
 
                 entity.HasOne(e => e.StaffRole)
                     .WithMany(e => e.StaffRoleAssignments)
                     .HasForeignKey(e => e.RoleID)
-                    .HasConstraintName(
-                        "FK_StaffRoleAssignment_StaffRole");
+                    .HasConstraintName("FK_StaffRoleAssignment_StaffRole");
 
                 entity.HasIndex(e => new { e.StaffID, e.RoleID })
                     .IsUnique();
             });
 
-
-            // =====================================
-            // RECIPE CONFIGURATION
-            // =====================================
-
+            // Recipe
             modelBuilder.Entity<Recipe>(entity =>
             {
                 entity.ToTable("Recipe");
-
                 entity.HasKey(e => e.RecipeId);
 
                 entity.Property(e => e.RecipeId)
@@ -329,15 +342,10 @@ namespace smart_corporate_cafeteria_management.Data
                     .IsRequired();
             });
 
-
-            // =====================================
-            // SUPPLIER CONFIGURATION
-            // =====================================
-
+            // Supplier
             modelBuilder.Entity<Supplier>(entity =>
             {
                 entity.ToTable("Supplier");
-
                 entity.HasKey(e => e.SupplierId);
 
                 entity.Property(e => e.SupplierId)

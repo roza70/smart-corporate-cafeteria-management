@@ -1,0 +1,251 @@
+﻿@using smart_corporate_cafeteria_management.Models
+
+@{
+    ViewData["Title"] = "Meal Collection";
+
+    var tokens = ViewBag.Tokens as List<MealToken>
+                 ?? new List<MealToken>();
+
+    var message = TempData["Message"]?.ToString();
+    var status = TempData["Status"]?.ToString();
+}
+
+<div class="container-fluid mt-4">
+
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h2>🍽️ Meal Collection Management</h2>
+        <p class="text-muted">
+            Generate daily employee tokens and verify lunch collection.
+        </p>
+    </div>
+
+    <!-- Success / Error Message -->
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert @(status == "Approved"
+             ? "alert-success"
+             : "alert-danger") alert-dismissible fade show">
+
+            @message
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    }
+
+    <div class="row g-4">
+
+        <!-- Generate Daily Tokens -->
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        🎟️ Generate Daily Tokens
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    <p class="text-muted">
+                        Generate a unique lunch token for each employee
+                        for today's meal collection.
+                    </p>
+
+                    <h6>
+                        Today's Date:
+                        <strong>@DateTime.Today.ToString("dd MMM yyyy")</strong>
+                    </h6>
+
+                    <hr />
+
+                    <form asp-controller="MealCollection"
+                          asp-action="GenerateDailyTokens"
+                          method="post">
+
+                        <button type="submit"
+                                class="btn btn-success w-100">
+
+                            Generate Daily Tokens
+
+                        </button>
+
+                    </form>
+
+                    <div class="mt-3 text-muted small">
+                        <strong>Note:</strong>
+                        Employees who already have a token today
+                        will not receive another token.
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Verify & Collect Lunch -->
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        🔍 Verify & Collect Lunch
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    <p class="text-muted">
+                        Enter the employee's daily unique token
+                        to verify and complete lunch collection.
+                    </p>
+
+                    <form asp-controller="MealCollection"
+                          asp-action="Collect"
+                          method="post">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Token Number
+                            </label>
+
+                            <input type="text"
+                                   name="tokenNumber"
+                                   class="form-control"
+                                   placeholder="Example: TK-20261127-001"
+                                   required
+                                   maxlength="30"
+                                   autocomplete="off" />
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            Verify & Collect Lunch
+
+                        </button>
+
+                    </form>
+
+                    <div class="mt-3 text-muted small">
+                        Each token can be used only once.
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Today's Token List -->
+    <div class="card shadow-sm mt-4">
+
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">
+                📋 Today's Employee Token List
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (tokens.Any())
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Token Number</th>
+                                <th>Generated At</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var token in tokens)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @token.EmployeeID
+                                    </td>
+
+                                    <td>
+                                        @(token.Employee?.EmployeeName ?? "N/A")
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            @token.TokenNumber
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @token.GeneratedAt.ToString("hh:mm tt")
+                                    </td>
+
+                                    <td>
+
+                                        @if (token.Status == "Active")
+                                        {
+                                            <span class="badge bg-success">
+                                                Active
+                                            </span>
+                                        }
+                                        else if (token.Status == "Used")
+                                        {
+                                            <span class="badge bg-primary">
+                                                Used
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                @token.Status
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4">
+
+                    <h6 class="text-muted">
+                        No tokens generated for today.
+                    </h6>
+
+                    <p class="text-muted small mb-0">
+                        Click "Generate Daily Tokens" to create today's tokens.
+                    </p>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

@@ -5,7 +5,8 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>smart_corporate_cafeteria_management</RootNamespace>
-	</PropertyGroup>
+	  <UserSecretsId>248f3915-5723-41cb-bd6d-2123acd8a3db</UserSecretsId>
+  </PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
@@ -16,6 +17,9 @@
 		</PackageReference>
 
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
+
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
+
 	</ItemGroup>
 
 	<ItemGroup>

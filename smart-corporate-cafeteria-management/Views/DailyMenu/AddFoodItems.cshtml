@@ -1,0 +1,84 @@
+﻿@model smart_corporate_cafeteria_management.ViewModels.AddFoodItemsViewModel
+
+@{
+    ViewData["Title"] = "Add Food Items";
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Add Food Items</h2>
+        <p class="text-muted">
+            Select food items for your daily cafeteria menu.
+        </p>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Menu Date</label>
+                <input type="text"
+                       class="form-control"
+                       value="@Model.MenuDate.ToString("dd MMM yyyy")"
+                       readonly />
+            </div>
+
+            <form asp-controller="DailyMenu"
+                  asp-action="AddFoodItems"
+                  method="post">
+
+                <input type="hidden" asp-for="MenuID" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        Select Food Items
+                    </label>
+
+                    @if (Model.AvailableFoodItems.Any())
+                    {
+                        @foreach (var food in Model.AvailableFoodItems)
+                        {
+                            <div class="form-check mb-2">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="SelectedFoodItemIds"
+                                       value="@food.Value"
+                                       id="food_@food.Value" />
+
+                                <label class="form-check-label"
+                                       for="food_@food.Value">
+                                    @food.Text
+                                </label>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">
+                            No active food items available.
+                            Please add food items first.
+                        </p>
+                    }
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit"
+                            class="btn btn-primary"
+                            disabled="@(!Model.AvailableFoodItems.Any())">
+                        Save Food Items
+                    </button>
+
+                    <a asp-controller="DailyMenu"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

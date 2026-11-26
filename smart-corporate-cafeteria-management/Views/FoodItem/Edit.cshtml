@@ -1,0 +1,286 @@
+﻿@model smart_corporate_cafeteria_management.Models.FoodItem
+
+@{
+    ViewData["Title"] = "Edit Food Item";
+}
+
+<div class="container-fluid py-4 food-page">
+
+    <!-- FOOD DECORATIONS -->
+    <div class="create-food-decoration carrot">🥕</div>
+    <div class="create-food-decoration tomato">🍅</div>
+
+    <!-- PAGE HEADER -->
+    <div class="food-page-header mb-4">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+            <div>
+                <div class="food-eyebrow mb-2">
+                    KITCHEN MANAGEMENT / FOOD ITEMS / EDIT
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="food-summary-icon food-icon-green">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+
+                    <div>
+                        <h2 class="fw-bold mb-1">Edit Food Item</h2>
+                        <p class="text-muted mb-0">
+                            Keep your cafeteria food collection updated.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <a asp-action="Index"
+               class="btn btn-outline-success px-4 py-2">
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to Food Items
+            </a>
+
+        </div>
+    </div>
+
+    <!-- EDITING HIGHLIGHT -->
+    <div class="food-collection-highlight mb-4">
+
+        <div class="food-highlight-icon">🍽️</div>
+
+        <div>
+            <span class="food-highlight-label">
+                FOOD ITEM EDITOR
+            </span>
+
+            <h5 class="fw-bold mb-1">
+                Updating: @Model.FoodName
+            </h5>
+
+            <p class="mb-0">
+                Review the information carefully before saving your changes.
+            </p>
+        </div>
+
+        <div class="ms-auto text-end d-none d-md-block">
+            <span class="text-muted small d-block">RECORD ID</span>
+            <span class="fw-bold">#@Model.FoodItemId</span>
+        </div>
+
+    </div>
+
+    <!-- MAIN FORM -->
+    <div class="row justify-content-center">
+
+        <div class="col-xl-8 col-lg-10 food-form-wrapper">
+
+            <div class="create-food-decoration chilli">🌶️</div>
+
+            <div class="food-table-card">
+
+                <!-- FORM HEADER -->
+                <div class="px-4 py-4 border-bottom">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="food-summary-icon food-icon-green">
+                            <i class="bi bi-card-checklist"></i>
+                        </div>
+
+                        <div>
+                            <h5 class="fw-bold mb-1">
+                                Food Item Information
+                            </h5>
+
+                            <small class="text-muted">
+                                Modify the food details and availability.
+                            </small>
+                        </div>
+
+                        <div class="ms-auto">
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success-subtle text-success px-3 py-2">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary-subtle text-secondary px-3 py-2">
+                                    <i class="bi bi-pause-circle me-1"></i>
+                                    Inactive
+                                </span>
+                            }
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- FORM BODY -->
+                <div class="p-4">
+
+                    <form asp-action="Edit"
+                          asp-route-id="@Model.FoodItemId"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger"
+                             role="alert">
+                        </div>
+
+                        <input type="hidden" asp-for="FoodItemId" />
+
+                        <!-- FOOD NAME -->
+                        <div class="mb-4">
+
+                            <label asp-for="FoodName"
+                                   class="form-label fw-semibold">
+                                <i class="bi bi-egg-fried me-2 text-success"></i>
+                                Food Name
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input asp-for="FoodName"
+                                   class="form-control"
+                                   placeholder="Enter food name" />
+
+                            <span asp-validation-for="FoodName"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <!-- CATEGORY -->
+                        <div class="mb-4">
+
+                            <label asp-for="CategoryID"
+                                   class="form-label fw-semibold">
+                                <i class="bi bi-tags me-2 text-success"></i>
+                                Food Category
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <select asp-for="CategoryID"
+                                    asp-items="ViewBag.CategoryID"
+                                    class="form-select">
+
+                                <option value="">
+                                    Select a food category
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="CategoryID"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <!-- DESCRIPTION -->
+                        <div class="mb-4">
+
+                            <label asp-for="Description"
+                                   class="form-label fw-semibold">
+                                <i class="bi bi-card-text me-2 text-success"></i>
+                                Food Description
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Describe ingredients or preparation details..."></textarea>
+
+                            <span asp-validation-for="Description"
+                                  class="text-danger small">
+                            </span>
+
+                            <small class="text-muted">
+                                Keep the description clear and informative.
+                            </small>
+
+                        </div>
+
+                        <!-- STATUS -->
+                        <div class="food-status-panel p-3 rounded-3 mb-4">
+
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                                <div>
+                                    <div class="form-check form-switch">
+
+                                        <input asp-for="IsActive"
+                                               class="form-check-input"
+                                               type="checkbox"
+                                               role="switch" />
+
+                                        <label asp-for="IsActive"
+                                               class="form-check-label fw-semibold">
+                                            Active Food Item
+                                        </label>
+
+                                    </div>
+
+                                    <small class="text-muted ms-5">
+                                        Active items can be selected for daily menus.
+                                    </small>
+                                </div>
+
+                                <i class="bi bi-toggle-on text-success fs-2"></i>
+
+                            </div>
+
+                        </div>
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="d-flex flex-wrap justify-content-end gap-2 pt-3 border-top">
+
+                            <a asp-action="Index"
+                               class="btn btn-light border px-4 py-2">
+                                <i class="bi bi-x-circle me-2"></i>
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success px-4 py-2">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Save Changes
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <!-- KITCHEN TIP -->
+            <div class="food-tip-card mt-4">
+
+                <div class="food-tip-icon">💡</div>
+
+                <div>
+                    <h6 class="fw-bold mb-1">Kitchen Management Tip</h6>
+
+                    <p class="mb-0">
+                        Keep food names and categories consistent.
+                        Deactivate unavailable food items instead of deleting
+                        items already used in daily menus.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

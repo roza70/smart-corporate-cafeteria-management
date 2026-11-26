@@ -1,0 +1,66 @@
+﻿@model smart_corporate_cafeteria_management.Models.DailyMenu
+
+@{
+    ViewData["Title"] = "Delete Daily Menu";
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h2 class="fw-bold text-danger">Delete Daily Menu</h2>
+        <p class="text-muted">
+            Review the menu information before deleting.
+        </p>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+            <div class="alert alert-warning">
+                Are you sure you want to delete this daily menu?
+            </div>
+
+            <dl class="row">
+
+                <dt class="col-sm-3">Menu ID</dt>
+                <dd class="col-sm-9">@Model.MenuID</dd>
+
+                <dt class="col-sm-3">Menu Date</dt>
+                <dd class="col-sm-9">
+                    @Model.MenuDate.ToString("dd MMM yyyy")
+                </dd>
+
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9">
+                    @(Model.Description ?? "No description")
+                </dd>
+
+                <dt class="col-sm-3">Total Food Items</dt>
+                <dd class="col-sm-9">
+                    @Model.DailyMenuItems.Count
+                </dd>
+
+            </dl>
+
+            <form asp-controller="DailyMenu"
+                  asp-action="Delete"
+                  asp-route-id="@Model.MenuID"
+                  method="post">
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Yes, Delete Menu
+                </button>
+
+                <a asp-controller="DailyMenu"
+                   asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

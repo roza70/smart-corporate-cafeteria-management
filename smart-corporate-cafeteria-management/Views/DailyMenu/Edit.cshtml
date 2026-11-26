@@ -1,0 +1,72 @@
+﻿@model smart_corporate_cafeteria_management.Models.DailyMenu
+
+@{
+    ViewData["Title"] = "Edit Daily Menu";
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Edit Daily Menu</h2>
+        <p class="text-muted">
+            Update the date and description of your daily menu.
+        </p>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+            <form asp-controller="DailyMenu"
+                  asp-action="Edit"
+                  method="post">
+
+                <input type="hidden" asp-for="MenuID" />
+
+                <div class="mb-3">
+                    <label asp-for="MenuDate"
+                           class="form-label fw-semibold">
+                        Menu Date
+                    </label>
+
+                    <input asp-for="MenuDate"
+                           type="date"
+                           class="form-control"
+                           required />
+
+                    <span asp-validation-for="MenuDate"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description"
+                           class="form-label fw-semibold">
+                        Description
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Enter menu description..."></textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Update Menu
+                    </button>
+
+                    <a asp-controller="DailyMenu"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

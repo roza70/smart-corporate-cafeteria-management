@@ -8,21 +8,27 @@
     <title>@ViewData["Title"] - Smart Cafeteria</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
     <link rel="stylesheet"
           href="~/smart_corporate_cafeteria_management.styles.css"
           asp-append-version="true" />
 
     <style>
         :root {
-            --sidebar-bg: #172033;
-            --sidebar-hover: #273650;
-            --primary: #4f6bed;
-            --page-bg: #f5f7fb;
-            --text-main: #202b3c;
-            --text-muted: #8a94a6;
+            --sidebar-bg: #A94730;
+            --sidebar-hover: #8F3B29;
+            --primary: #783020;
+            --page-bg: #FFF8F2;
+            --text-main: #293B30;
+            --text-muted: #8B817A;
+            --accent-orange: #F4B183;
+            --accent-cream: #FCE8DC;
+            --forest-green: #244B36;
         }
 
         * {
@@ -41,16 +47,21 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
+        /* =========================
+                   SIDEBAR
+                ========================= */
+
         .sidebar {
             width: 255px;
             min-width: 255px;
-            background: var(--sidebar-bg);
+            background: linear-gradient( 180deg, #A94730 0%, #873A29 100% );
             color: white;
             padding: 25px 16px;
             display: flex;
             flex-direction: column;
         }
+
+        /* Brand */
 
         .brand {
             display: flex;
@@ -61,11 +72,16 @@
             text-decoration: none;
         }
 
+            .brand:hover {
+                color: white;
+            }
+
         .brand-icon {
             width: 42px;
             height: 42px;
             border-radius: 12px;
-            background: var(--primary);
+            background: var(--accent-orange);
+            color: #71301F;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -80,17 +96,26 @@
 
             .brand-name small {
                 display: block;
-                color: #aab5c8;
+                color: #F5D1C2;
                 font-size: 11px;
                 font-weight: 400;
             }
 
+        /* Sidebar Section Labels */
+
         .sidebar-label {
-            color: #8490a5;
+            color: #F3C5B3;
             font-size: 10px;
             font-weight: 700;
             letter-spacing: 1.2px;
             padding: 15px 12px 9px;
+        }
+
+        /* Sidebar Navigation */
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar-link {
@@ -100,10 +125,10 @@
             padding: 11px 13px;
             margin: 3px 0;
             border-radius: 9px;
-            color: #c5cede;
+            color: #FBECE5;
             text-decoration: none;
             font-size: 13px;
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
 
             .sidebar-link i {
@@ -111,14 +136,15 @@
             }
 
             .sidebar-link:hover {
-                background: var(--sidebar-hover);
-                color: white;
+                background: rgba(255, 255, 255, 0.13);
+                color: #FFFFFF;
             }
 
             .sidebar-link.active {
-                background: var(--primary);
-                color: white;
+                background: #783020;
+                color: #FFFFFF;
                 font-weight: 600;
+                box-shadow: inset 3px 0 0 #F4B183;
             }
 
             .sidebar-link.disabled {
@@ -129,18 +155,23 @@
         .coming-soon {
             margin-left: auto;
             font-size: 9px;
-            color: #aab5c8;
+            color: #F5C9B7;
         }
+
+        /* Sidebar Footer */
 
         .sidebar-bottom {
             margin-top: auto;
             padding: 18px 10px 0;
-            border-top: 1px solid #303b50;
-            color: #aab5c8;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: #F5D1C2;
             font-size: 11px;
         }
 
-        /* Main area */
+        /* =========================
+                   MAIN AREA
+                ========================= */
+
         .main-area {
             flex: 1;
             min-width: 0;
@@ -148,11 +179,13 @@
             flex-direction: column;
         }
 
+        /* Top Navigation */
+
         .topbar {
             height: 72px;
             min-height: 72px;
-            background: white;
-            border-bottom: 1px solid #e9edf3;
+            background: #FFFFFF;
+            border-bottom: 1px solid #EEE8E2;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -163,6 +196,7 @@
             font-size: 18px;
             font-weight: 700;
             margin: 0;
+            color: var(--forest-green);
         }
 
         .topbar-subtitle {
@@ -170,6 +204,8 @@
             font-size: 11px;
             margin-top: 3px;
         }
+
+        /* Admin Profile */
 
         .admin-profile {
             display: flex;
@@ -181,8 +217,8 @@
             width: 38px;
             height: 38px;
             border-radius: 50%;
-            background: #e8edff;
-            color: var(--primary);
+            background: #FCE8DC;
+            color: #A94730;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -192,6 +228,7 @@
         .profile-name {
             font-size: 12px;
             font-weight: 600;
+            color: var(--text-main);
         }
 
         .profile-role {
@@ -201,6 +238,8 @@
             font-weight: 400;
         }
 
+        /* Page Content */
+
         .page-content {
             width: 100%;
             max-width: 1600px;
@@ -209,16 +248,22 @@
             flex: 1;
         }
 
+        /* Footer */
+
         .app-footer {
             padding: 16px 30px;
             color: var(--text-muted);
             font-size: 11px;
-            border-top: 1px solid #e9edf3;
+            border-top: 1px solid #EEE8E2;
             background: white;
         }
 
-        /* Responsive */
+        /* =========================
+                   RESPONSIVE DESIGN
+                ========================= */
+
         @@media (max-width: 768px) {
+
             .app-wrapper {
                 flex-direction: column;
             }
@@ -227,6 +272,7 @@
                 width: 100%;
                 min-width: 100%;
                 padding: 14px;
+                background: linear-gradient( 120deg, #A94730, #873A29 );
             }
 
             .brand {
@@ -238,15 +284,16 @@
                 display: none;
             }
 
+            .sidebar nav {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
             .sidebar-link {
                 display: inline-flex;
                 padding: 9px 11px;
                 margin: 2px;
-            }
-
-            .sidebar nav {
-                display: flex;
-                flex-wrap: wrap;
             }
 
             .topbar {
@@ -255,12 +302,36 @@
                 min-height: 62px;
             }
 
+            .topbar-title {
+                font-size: 16px;
+            }
+
             .page-content {
                 padding: 18px 12px;
             }
 
             .app-footer {
                 padding: 14px;
+            }
+        }
+
+        @@media (max-width: 420px) {
+
+            .admin-profile {
+                gap: 6px;
+            }
+
+            .profile-name {
+                font-size: 10px;
+            }
+
+            .profile-avatar {
+                width: 32px;
+                height: 32px;
+            }
+
+            .topbar-subtitle {
+                font-size: 9px;
             }
         }
     </style>
@@ -275,10 +346,14 @@
 
     <div class="app-wrapper">
 
-        <!-- Sidebar -->
+        <!-- SIDEBAR -->
         <aside class="sidebar">
 
-            <a asp-controller="Dashboard" asp-action="Index" class="brand">
+            <!-- BRAND -->
+            <a asp-controller="Dashboard"
+               asp-action="Index"
+               class="brand">
+
                 <div class="brand-icon">
                     <i class="bi bi-cup-hot-fill"></i>
                 </div>
@@ -287,81 +362,110 @@
                     Smart Cafeteria
                     <small>Management System</small>
                 </div>
+
             </a>
 
+            <!-- MAIN MENU -->
             <div class="sidebar-label">MAIN MENU</div>
 
             <nav>
-                <a asp-controller="Dashboard" asp-action="Index"
+
+                <a asp-controller="Dashboard"
+                   asp-action="Index"
                    class="sidebar-link @(currentController == "Dashboard" ? "active" : "")">
+
                     <i class="bi bi-grid-1x2-fill"></i>
                     Dashboard
+
                 </a>
 
-                <a asp-controller="Employee" asp-action="Index"
+                <a asp-controller="Employee"
+                   asp-action="Index"
                    class="sidebar-link @(currentController == "Employee" ? "active" : "")">
+
                     <i class="bi bi-people-fill"></i>
                     Employees
+
                 </a>
 
-                <a asp-controller="Department" asp-action="Index"
+                <a asp-controller="Department"
+                   asp-action="Index"
                    class="sidebar-link @(currentController == "Department" ? "active" : "")">
+
                     <i class="bi bi-diagram-3-fill"></i>
                     Departments
+
                 </a>
+
             </nav>
 
+            <!-- CAFETERIA OPERATIONS -->
             <div class="sidebar-label">CAFETERIA OPERATIONS</div>
 
             <nav>
-                <!-- Food Categories: Active Module -->
+
+                <!-- FOOD CATEGORIES -->
                 <a asp-controller="FoodCategory"
                    asp-action="Index"
                    class="sidebar-link @(currentController == "FoodCategory" ? "active" : "")">
+
                     <i class="bi bi-tags-fill"></i>
                     Food Categories
+
                 </a>
 
-                <span class="sidebar-link disabled">
+                <!-- FOOD ITEMS -->
+                <a asp-controller="FoodItem"
+                   asp-action="Index"
+                   class="sidebar-link @(currentController == "FoodItem" ? "active" : "")">
+
                     <i class="bi bi-egg-fried"></i>
                     Food Items
-                    <small class="coming-soon">Soon</small>
-                </span>
 
+                </a>
+
+                <!-- DAILY MENU -->
                 <span class="sidebar-link disabled">
                     <i class="bi bi-calendar3"></i>
                     Daily Menu
                     <small class="coming-soon">Soon</small>
                 </span>
 
+                <!-- MEAL COLLECTION -->
                 <span class="sidebar-link disabled">
                     <i class="bi bi-qr-code"></i>
                     Meal Collection
                     <small class="coming-soon">Soon</small>
                 </span>
 
+                <!-- KITCHEN MANAGEMENT -->
                 <span class="sidebar-link disabled">
                     <i class="bi bi-clipboard-check"></i>
                     Kitchen Management
                     <small class="coming-soon">Soon</small>
                 </span>
 
+                <!-- INVENTORY -->
                 <span class="sidebar-link disabled">
                     <i class="bi bi-box-seam"></i>
                     Inventory
                     <small class="coming-soon">Soon</small>
                 </span>
 
+                <!-- SUPPLIERS -->
                 <span class="sidebar-link disabled">
                     <i class="bi bi-truck"></i>
                     Suppliers
                     <small class="coming-soon">Soon</small>
                 </span>
+
             </nav>
 
+            <!-- MANAGEMENT -->
             <div class="sidebar-label">MANAGEMENT</div>
 
             <nav>
+
                 <span class="sidebar-link disabled">
                     <i class="bi bi-bar-chart-fill"></i>
                     Reports & Analytics
@@ -373,56 +477,85 @@
                     Settings
                     <small class="coming-soon">Soon</small>
                 </span>
+
             </nav>
 
+            <!-- SIDEBAR FOOTER -->
             <div class="sidebar-bottom">
+
                 <i class="bi bi-shield-check me-1"></i>
+
                 Smart Corporate Cafeteria
+
                 <br />
+
                 <span>Version 1.0</span>
+
             </div>
 
         </aside>
 
-        <!-- Main Content -->
+        <!-- MAIN CONTENT -->
         <div class="main-area">
 
+            <!-- TOPBAR -->
             <header class="topbar">
 
                 <div>
+
                     <h1 class="topbar-title">
                         @(ViewData["Title"] ?? "Dashboard")
                     </h1>
+
                     <div class="topbar-subtitle">
                         Smart Corporate Cafeteria Management System
                     </div>
+
                 </div>
 
+                <!-- ADMIN PROFILE -->
                 <div class="admin-profile">
-                    <div class="profile-avatar">A</div>
-                    <div class="profile-name">
-                        Administrator
-                        <span class="profile-role">System Admin</span>
+
+                    <div class="profile-avatar">
+                        A
                     </div>
+
+                    <div class="profile-name">
+
+                        Administrator
+
+                        <span class="profile-role">
+                            System Admin
+                        </span>
+
+                    </div>
+
                 </div>
 
             </header>
 
+            <!-- PAGE CONTENT -->
             <main role="main" class="page-content">
                 @RenderBody()
             </main>
 
+            <!-- FOOTER -->
             <footer class="app-footer">
+
                 © 2026 Smart Corporate Cafeteria Management System.
                 All rights reserved.
+
             </footer>
 
         </div>
 
     </div>
 
+    <!-- SCRIPTS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)

@@ -1,0 +1,110 @@
+﻿@model IEnumerable<smart_corporate_cafeteria_management.Models.DailyMenu>
+
+@{
+    ViewData["Title"] = "Daily Menu";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Daily Menu</h2>
+            <p class="text-muted">
+                Manage daily cafeteria menus.
+            </p>
+        </div>
+
+        <a asp-controller="DailyMenu"
+           asp-action="Create"
+           class="btn btn-primary">
+            + Create New Menu
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Menu ID</th>
+                            <th>Menu Date</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var menu in Model)
+                            {
+                                <tr>
+                                    <td>@menu.MenuID</td>
+
+                                    <td>
+                                        @menu.MenuDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        @(menu.Description ?? "No description")
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex gap-2 flex-wrap">
+
+                                            <a asp-controller="DailyMenu"
+                                               asp-action="Details"
+                                               asp-route-id="@menu.MenuID"
+                                               class="btn btn-sm btn-outline-primary">
+                                                View Details
+                                            </a>
+
+                                            <a asp-controller="DailyMenu"
+                                               asp-action="AddFoodItems"
+                                               asp-route-id="@menu.MenuID"
+                                               class="btn btn-sm btn-success">
+                                                + Add Food
+                                            </a>
+
+                                            <a asp-controller="DailyMenu"
+                                               asp-action="Edit"
+                                               asp-route-id="@menu.MenuID"
+                                               class="btn btn-sm btn-outline-warning">
+                                                Edit
+                                            </a>
+
+                                            <a asp-controller="DailyMenu"
+                                               asp-action="Delete"
+                                               asp-route-id="@menu.MenuID"
+                                               class="btn btn-sm btn-outline-danger">
+                                                Delete
+                                            </a>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4"
+                                    class="text-center text-muted py-4">
+                                    No daily menus found.
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>

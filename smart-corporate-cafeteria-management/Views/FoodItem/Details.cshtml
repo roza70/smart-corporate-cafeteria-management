@@ -1,0 +1,409 @@
+﻿@model smart_corporate_cafeteria_management.Models.FoodItem
+
+@{
+    ViewData["Title"] = "Food Item Details";
+}
+
+<style>
+    .details-page {
+        padding: 12px 8px 35px;
+        color: #263b30;
+    }
+
+    .details-breadcrumb {
+        color: #829087;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.3px;
+        margin-bottom: 12px;
+    }
+
+    .details-heading {
+        color: #234b36;
+        font-size: 27px;
+        font-weight: 750;
+        letter-spacing: -0.6px;
+    }
+
+    .details-subtitle {
+        color: #849087;
+        font-size: 14px;
+    }
+
+    .details-main-card {
+        background: #fff;
+        border: 1px solid #e9eee9;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(35, 75, 54, 0.07);
+    }
+
+    .details-card-header {
+        background: linear-gradient(120deg, #f0f7f1, #faf8f2);
+        padding: 25px 30px;
+        border-bottom: 1px solid #e9eee9;
+    }
+
+    .details-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #dcefe1;
+        color: #286341;
+        font-size: 26px;
+    }
+
+    .details-record-label {
+        color: #839087;
+        font-size: 12px;
+    }
+
+    .details-card-body {
+        padding: 30px;
+    }
+
+    .details-section-label {
+        display: block;
+        color: #8b978e;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 1.1px;
+        margin-bottom: 10px;
+    }
+
+    .details-food-name {
+        color: #234b36;
+        font-size: 25px;
+        font-weight: 750;
+        letter-spacing: -0.4px;
+    }
+
+    .details-info-box {
+        height: 100%;
+        padding: 19px;
+        background: #f8faf8;
+        border: 1px solid #edf1ed;
+        border-radius: 13px;
+    }
+
+    .details-info-value {
+        color: #35483c;
+        font-size: 15px;
+        font-weight: 650;
+    }
+
+    .details-info-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: #e7f1e9;
+        color: #35734c;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 13px;
+    }
+
+    .details-description {
+        background: #fafbf9;
+        border: 1px solid #edf0eb;
+        border-radius: 13px;
+        padding: 20px;
+        color: #56645a;
+        font-size: 14px;
+        line-height: 1.8;
+        min-height: 85px;
+    }
+
+    .details-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border-radius: 30px;
+        padding: 8px 14px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .details-status-active {
+        background: #e5f4e9;
+        color: #267443;
+    }
+
+    .details-status-inactive {
+        background: #f0f1f0;
+        color: #69736c;
+    }
+
+    .details-footer {
+        padding: 20px 30px;
+        background: #fcfdfb;
+        border-top: 1px solid #edf0ed;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .details-btn {
+        border-radius: 9px;
+        padding: 10px 19px;
+        font-size: 13px;
+        font-weight: 650;
+        transition: all .2s ease;
+    }
+
+    .details-btn-edit {
+        background: #286341;
+        color: #fff;
+        border: 1px solid #286341;
+    }
+
+        .details-btn-edit:hover {
+            background: #1e5033;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+    .details-btn-back {
+        background: #fff;
+        color: #536359;
+        border: 1px solid #dfe6df;
+    }
+
+        .details-btn-back:hover {
+            background: #f1f6f1;
+            color: #234b36;
+        }
+
+    .details-divider {
+        border: 0;
+        border-top: 1px solid #edf0ed;
+        margin: 25px 0;
+    }
+
+    @@media (max-width: 576px) {
+        .details-heading {
+            font-size: 23px;
+        }
+
+        .details-card-header,
+        .details-card-body {
+            padding: 20px;
+        }
+
+        .details-footer {
+            padding: 18px 20px;
+        }
+
+        .details-food-name {
+            font-size: 21px;
+        }
+
+        .details-footer .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container-fluid details-page">
+
+    <!-- Page Heading -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <div class="details-breadcrumb">
+                KITCHEN MANAGEMENT / FOOD ITEMS / DETAILS
+            </div>
+
+            <h2 class="details-heading mb-2">
+                Food Item Details
+            </h2>
+
+            <p class="details-subtitle mb-0">
+                View and manage your cafeteria food item information.
+            </p>
+        </div>
+
+        <a asp-action="Index" class="btn details-btn details-btn-back">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Food Items
+        </a>
+
+    </div>
+
+    <!-- Main Details Card -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-9 col-xxl-8">
+
+            <div class="details-main-card">
+
+                <!-- Card Header -->
+                <div class="details-card-header">
+
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="details-icon">
+                                <i class="bi bi-egg-fried"></i>
+                            </div>
+
+                            <div>
+                                <h5 class="fw-bold mb-1" style="color:#234b36;">
+                                    Food Item Information
+                                </h5>
+
+                                <div class="details-record-label">
+                                    Record ID: #@Model.FoodItemId
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div>
+                            @if (Model.IsActive)
+                            {
+                                <span class="details-status details-status-active">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="details-status details-status-inactive">
+                                    <i class="bi bi-pause-circle-fill"></i>
+                                    Inactive
+                                </span>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="details-card-body">
+
+                    <!-- Food Name -->
+                    <div class="mb-4">
+
+                        <span class="details-section-label">
+                            FOOD NAME
+                        </span>
+
+                        <h3 class="details-food-name mb-0">
+                            @Model.FoodName
+                        </h3>
+
+                    </div>
+
+                    <hr class="details-divider" />
+
+                    <!-- Category and Availability -->
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <div class="details-info-box">
+
+                                <div class="details-info-icon">
+                                    <i class="bi bi-grid-fill"></i>
+                                </div>
+
+                                <span class="details-section-label">
+                                    FOOD CATEGORY
+                                </span>
+
+                                <div class="details-info-value">
+                                    @(Model.FoodCategory?.CategoryName ?? "Not assigned")
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="details-info-box">
+
+                                <div class="details-info-icon">
+                                    <i class="bi bi-toggle-on"></i>
+                                </div>
+
+                                <span class="details-section-label">
+                                    AVAILABILITY STATUS
+                                </span>
+
+                                <div class="details-info-value">
+                                    @if (Model.IsActive)
+                                    {
+                                        <span style="color:#267443;">
+                                            Available
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:#69736c;">
+                                            Unavailable
+                                        </span>
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr class="details-divider" />
+
+                    <!-- Description -->
+                    <div>
+
+                        <span class="details-section-label">
+                            FOOD DESCRIPTION
+                        </span>
+
+                        <div class="details-description">
+                            @(string.IsNullOrWhiteSpace(Model.Description)
+                                ? "No description has been added for this food item."
+                                : Model.Description)
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Card Footer -->
+                <div class="details-footer">
+
+                    <span class="small text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Food Item #@Model.FoodItemId
+                    </span>
+
+                    <div class="d-flex gap-2 flex-wrap">
+
+                        <a asp-action="Index"
+                           class="btn details-btn details-btn-back">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Back to List
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@Model.FoodItemId"
+                           class="btn details-btn details-btn-edit">
+                            <i class="bi bi-pencil-square me-2"></i>
+                            Edit Food Item
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

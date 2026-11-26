@@ -1,0 +1,153 @@
+﻿@model IEnumerable<smart_corporate_cafeteria_management.Models.CafeteriaStaff>
+
+@{
+    ViewData["Title"] = "Staff Management";
+
+    var staffList = Model?.ToList()
+        ?? new List<smart_corporate_cafeteria_management.Models.CafeteriaStaff>();
+
+    var totalStaff = staffList.Count;
+    var activeStaff = staffList.Count(s => s.Status);
+    var inactiveStaff = staffList.Count(s => !s.Status);
+}
+
+<div class="container-fluid py-3">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Staff Management</h2>
+            <p class="text-muted mb-0">
+                Manage cafeteria staff members and their information.
+            </p>
+        </div>
+
+        <a asp-controller="CafeteriaStaff"
+           asp-action="Create"
+           class="btn btn-success px-4 py-2">
+            <i class="bi bi-person-plus me-2"></i>
+            Add New Staff
+        </a>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Total Staff</p>
+                    <h3 class="fw-bold mb-0">@totalStaff</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Active Staff</p>
+                    <h3 class="fw-bold text-success mb-0">@activeStaff</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Inactive Staff</p>
+                    <h3 class="fw-bold text-danger mb-0">@inactiveStaff</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-3">All Staff Members</h5>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Staff ID</th>
+                            <th>Staff Name</th>
+                            <th>Phone Number</th>
+                            <th>Gender</th>
+                            <th>Joining Date</th>
+                            <th>Salary</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (staffList.Any())
+                        {
+                            @foreach (var staff in staffList)
+                            {
+                                <tr>
+                                    <td>@staff.StaffID</td>
+
+                                    <td class="fw-semibold">
+                                        @staff.StaffName
+                                    </td>
+
+                                    <td>
+                                        @(staff.PhoneNumber ?? "N/A")
+                                    </td>
+
+                                    <td>@staff.Gender</td>
+
+                                    <td>@staff.JoiningDate</td>
+
+                                    <td>
+                                        @(staff.Salary.HasValue
+                                            ? staff.Salary.Value.ToString("N2")
+                                            : "N/A")
+                                    </td>
+
+                                    <td>
+                                        @if (staff.Status)
+                                        {
+                                            <span class="badge bg-success-subtle text-success">
+                                                Active
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger-subtle text-danger">
+                                                Inactive
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <a asp-controller="CafeteriaStaff"
+                                           asp-action="Edit"
+                                           asp-route-id="@staff.StaffID"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8"
+                                    class="text-center text-muted py-4">
+                                    No staff members found.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>

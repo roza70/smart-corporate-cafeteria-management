@@ -1,4 +1,92 @@
-﻿
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using smart_corporate_cafeteria_management.Data
+@using smart_corporate_cafeteria_management.Models
+
+@inject UserManager<ApplicationUser> UserManager
+@inject CafeteriaDbContext DbContext
+
+@{
+    ViewData["Title"] ??= "Dashboard";
+
+    var currentController =
+        ViewContext.RouteData.Values["controller"]?.ToString();
+
+    var isAdmin = User.IsInRole("Admin");
+    var isKitchenStaff = User.IsInRole("Kitchen Staff");
+    var isEmployee = User.IsInRole("Employee");
+    var isProcurementStaff = User.IsInRole("Procurement Staff");
+
+    var dashboardController = isAdmin ? "Dashboard"
+        : isKitchenStaff ? "KitchenStaff"
+        : isEmployee ? "EmployeeDashboard"
+        : isProcurementStaff ? "ProcurementStaff"
+        : "Account";
+
+    var profileName = User.Identity?.Name ?? "User";
+    var profileRole = "User";
+
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        var appUser = await UserManager.GetUserAsync(User);
+
+        if (isAdmin)
+        {
+            profileName = "Administrator";
+            profileRole = "System Admin";
+        }
+        else if (isKitchenStaff)
+        {
+            profileRole = "Kitchen Staff";
+
+            if (appUser?.StaffID != null)
+            {
+                var staffName = await DbContext.CafeteriaStaff
+                    .AsNoTracking()
+                    .Where(s => s.StaffID == appUser.StaffID.Value)
+                    .Select(s => s.StaffName)
+                    .FirstOrDefaultAsync();
+
+                profileName = staffName ?? profileName;
+            }
+        }
+        else if (isEmployee)
+        {
+            profileRole = "Employee";
+
+            if (appUser?.EmployeeId != null)
+            {
+                var employeeName = await DbContext.Employees
+                    .AsNoTracking()
+                    .Where(e => e.EmployeeId == appUser.EmployeeId.Value)
+                    .Select(e => e.EmployeeName)
+                    .FirstOrDefaultAsync();
+
+                profileName = employeeName ?? profileName;
+            }
+        }
+        else if (isProcurementStaff)
+        {
+            profileRole = "Procurement Staff";
+
+            if (appUser?.StaffID != null)
+            {
+                var staffName = await DbContext.CafeteriaStaff
+                    .AsNoTracking()
+                    .Where(s => s.StaffID == appUser.StaffID.Value)
+                    .Select(s => s.StaffName)
+                    .FirstOrDefaultAsync();
+
+                profileName = staffName ?? profileName;
+            }
+        }
+    }
+
+    var avatarInitial = !string.IsNullOrWhiteSpace(profileName)
+        ? profileName.Trim().Substring(0, 1).ToUpper()
+        : "U";
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,9 +135,7 @@
             min-height: 100vh;
         }
 
-        /* =========================
-                           SIDEBAR
-                ========================= */
+        /* SIDEBAR */
 
         .sidebar {
             width: 255px;
@@ -60,8 +146,6 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* Brand */
 
         .brand {
             display: flex;
@@ -101,8 +185,6 @@
                 font-weight: 400;
             }
 
-        /* Sidebar Section Labels */
-
         .sidebar-label {
             color: #F3C5B3;
             font-size: 10px;
@@ -110,8 +192,6 @@
             letter-spacing: 1.2px;
             padding: 15px 12px 9px;
         }
-
-        /* Sidebar Navigation */
 
         .sidebar nav {
             display: flex;
@@ -158,8 +238,6 @@
             color: #F5C9B7;
         }
 
-        /* Sidebar Footer */
-
         .sidebar-bottom {
             margin-top: auto;
             padding: 18px 10px 0;
@@ -168,9 +246,7 @@
             font-size: 11px;
         }
 
-        /* =========================
-                           MAIN AREA
-                ========================= */
+        /* MAIN AREA */
 
         .main-area {
             flex: 1;
@@ -178,8 +254,6 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* Top Navigation */
 
         .topbar {
             min-height: 72px;
@@ -205,7 +279,7 @@
             margin-top: 3px;
         }
 
-        /* Admin Profile */
+        /* USER PROFILE */
 
         .admin-profile {
             display: flex;
@@ -239,7 +313,7 @@
             font-weight: 400;
         }
 
-        /* Logout Button */
+        /* LOGOUT */
 
         .logout-form {
             margin-left: 12px;
@@ -271,7 +345,7 @@
                 font-size: 15px;
             }
 
-        /* Page Content */
+        /* PAGE CONTENT */
 
         .page-content {
             width: 100%;
@@ -281,8 +355,6 @@
             flex: 1;
         }
 
-        /* Footer */
-
         .app-footer {
             padding: 16px 30px;
             color: var(--text-muted);
@@ -291,12 +363,9 @@
             background: white;
         }
 
-        /* =========================
-                           RESPONSIVE DESIGN
-                ========================= */
+        /* RESPONSIVE DESIGN */
 
         @@media (max-width: 768px) {
-
             .app-wrapper {
                 flex-direction: column;
             }
@@ -348,7 +417,6 @@
         }
 
         @@media (max-width: 520px) {
-
             .topbar {
                 align-items: flex-start;
                 flex-direction: column;
@@ -365,7 +433,6 @@
         }
 
         @@media (max-width: 420px) {
-
             .admin-profile {
                 gap: 6px;
             }
@@ -393,18 +460,13 @@
 
 <body>
 
-    @{
-        var currentController =
-            ViewContext.RouteData.Values["controller"]?.ToString();
-    }
-
     <div class="app-wrapper">
 
         <!-- SIDEBAR -->
         <aside class="sidebar">
 
             <!-- BRAND -->
-            <a asp-controller="Dashboard"
+            <a asp-controller="@dashboardController"
                asp-action="Index"
                class="brand">
 
@@ -424,121 +486,164 @@
 
             <nav>
 
-                <a asp-controller="Dashboard"
+                <a asp-controller="@dashboardController"
                    asp-action="Index"
-                   class="sidebar-link @(currentController == "Dashboard" ? "active" : "")">
+                   class="sidebar-link @(currentController == dashboardController ? "active" : "")">
 
                     <i class="bi bi-grid-1x2-fill"></i>
                     Dashboard
-
                 </a>
 
-                <a asp-controller="Employee"
-                   asp-action="Index"
-                   class="sidebar-link @(currentController == "Employee" ? "active" : "")">
+                @if (isAdmin)
+                {
+                    <a asp-controller="Employee"
+                       asp-action="Index"
+                       class="sidebar-link @(currentController == "Employee" ? "active" : "")">
 
-                    <i class="bi bi-people-fill"></i>
-                    Employees
+                        <i class="bi bi-people-fill"></i>
+                        Employees
+                    </a>
 
-                </a>
+                    <a asp-controller="Department"
+                       asp-action="Index"
+                       class="sidebar-link @(currentController == "Department" ? "active" : "")">
 
-                <a asp-controller="Department"
-                   asp-action="Index"
-                   class="sidebar-link @(currentController == "Department" ? "active" : "")">
-
-                    <i class="bi bi-diagram-3-fill"></i>
-                    Departments
-
-                </a>
+                        <i class="bi bi-diagram-3-fill"></i>
+                        Departments
+                    </a>
+                }
 
             </nav>
 
             <!-- CAFETERIA OPERATIONS -->
-            <div class="sidebar-label">CAFETERIA OPERATIONS</div>
+            @if (isAdmin || isKitchenStaff)
+            {
+                <div class="sidebar-label">CAFETERIA OPERATIONS</div>
 
-            <nav>
+                <nav>
 
-                <!-- FOOD CATEGORIES -->
-                <a asp-controller="FoodCategory"
-                   asp-action="Index"
-                   class="sidebar-link @(currentController == "FoodCategory" ? "active" : "")">
+                    @if (isAdmin)
+                    {
+                        <a asp-controller="FoodCategory"
+                           asp-action="Index"
+                           class="sidebar-link @(currentController == "FoodCategory" ? "active" : "")">
 
-                    <i class="bi bi-tags-fill"></i>
-                    Food Categories
+                            <i class="bi bi-tags-fill"></i>
+                            Food Categories
+                        </a>
 
-                </a>
+                        <a asp-controller="FoodItem"
+                           asp-action="Index"
+                           class="sidebar-link @(currentController == "FoodItem" ? "active" : "")">
 
-                <!-- FOOD ITEMS -->
-                <a asp-controller="FoodItem"
-                   asp-action="Index"
-                   class="sidebar-link @(currentController == "FoodItem" ? "active" : "")">
+                            <i class="bi bi-egg-fried"></i>
+                            Food Items
+                        </a>
+                    }
 
-                    <i class="bi bi-egg-fried"></i>
-                    Food Items
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-calendar3"></i>
+                        Daily Menu
+                        <small class="coming-soon">Soon</small>
+                    </span>
 
-                </a>
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-clipboard-check"></i>
+                        Recipe Management
+                        <small class="coming-soon">Soon</small>
+                    </span>
 
-                <!-- DAILY MENU -->
-                <span class="sidebar-link disabled">
-                    <i class="bi bi-calendar3"></i>
-                    Daily Menu
-                    <small class="coming-soon">Soon</small>
-                </span>
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-qr-code"></i>
+                        Meal Collection
+                        <small class="coming-soon">Soon</small>
+                    </span>
 
-                <!-- MEAL COLLECTION -->
-                <span class="sidebar-link disabled">
-                    <i class="bi bi-qr-code"></i>
-                    Meal Collection
-                    <small class="coming-soon">Soon</small>
-                </span>
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-box-seam"></i>
+                        Inventory
+                        <small class="coming-soon">Soon</small>
+                    </span>
 
-                <!-- KITCHEN MANAGEMENT -->
-                <span class="sidebar-link disabled">
-                    <i class="bi bi-clipboard-check"></i>
-                    Kitchen Management
-                    <small class="coming-soon">Soon</small>
-                </span>
+                </nav>
+            }
 
-                <!-- INVENTORY -->
-                <span class="sidebar-link disabled">
-                    <i class="bi bi-box-seam"></i>
-                    Inventory
-                    <small class="coming-soon">Soon</small>
-                </span>
+            <!-- PROCUREMENT -->
+            @if (isAdmin || isProcurementStaff)
+            {
+                <div class="sidebar-label">PROCUREMENT</div>
 
-                <!-- SUPPLIERS -->
-                <span class="sidebar-link disabled">
-                    <i class="bi bi-truck"></i>
-                    Suppliers
-                    <small class="coming-soon">Soon</small>
-                </span>
+                <nav>
 
-            </nav>
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-truck"></i>
+                        Suppliers
+                        <small class="coming-soon">Soon</small>
+                    </span>
+
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-cart-check"></i>
+                        Grocery Purchases
+                        <small class="coming-soon">Soon</small>
+                    </span>
+
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-credit-card"></i>
+                        Purchase Payments
+                        <small class="coming-soon">Soon</small>
+                    </span>
+
+                </nav>
+            }
+
+            <!-- EMPLOYEE SERVICES -->
+            @if (isAdmin || isEmployee)
+            {
+                <div class="sidebar-label">EMPLOYEE SERVICES</div>
+
+                <nav>
+
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-calendar-check"></i>
+                        Daily Food Menu
+                        <small class="coming-soon">Soon</small>
+                    </span>
+
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-clock-history"></i>
+                        Meal History
+                        <small class="coming-soon">Soon</small>
+                    </span>
+
+                </nav>
+            }
 
             <!-- MANAGEMENT -->
-            <div class="sidebar-label">MANAGEMENT</div>
+            @if (isAdmin)
+            {
+                <div class="sidebar-label">MANAGEMENT</div>
 
-            <nav>
+                <nav>
 
-                <span class="sidebar-link disabled">
-                    <i class="bi bi-bar-chart-fill"></i>
-                    Reports & Analytics
-                    <small class="coming-soon">Soon</small>
-                </span>
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        Reports & Analytics
+                        <small class="coming-soon">Soon</small>
+                    </span>
 
-                <span class="sidebar-link disabled">
-                    <i class="bi bi-gear-fill"></i>
-                    Settings
-                    <small class="coming-soon">Soon</small>
-                </span>
+                    <span class="sidebar-link disabled">
+                        <i class="bi bi-gear-fill"></i>
+                        Settings
+                        <small class="coming-soon">Soon</small>
+                    </span>
 
-            </nav>
+                </nav>
+            }
 
             <!-- SIDEBAR FOOTER -->
             <div class="sidebar-bottom">
 
                 <i class="bi bi-shield-check me-1"></i>
-
                 Smart Corporate Cafeteria
 
                 <br />
@@ -558,7 +663,7 @@
                 <div>
 
                     <h1 class="topbar-title">
-                        @(ViewData["Title"] ?? "Dashboard")
+                        @ViewData["Title"]
                     </h1>
 
                     <div class="topbar-subtitle">
@@ -567,19 +672,19 @@
 
                 </div>
 
-                <!-- ADMIN PROFILE AND LOGOUT -->
+                <!-- DYNAMIC USER PROFILE -->
                 <div class="admin-profile">
 
                     <div class="profile-avatar">
-                        A
+                        @avatarInitial
                     </div>
 
                     <div class="profile-name">
 
-                        Administrator
+                        @profileName
 
                         <span class="profile-role">
-                            System Admin
+                            @profileRole
                         </span>
 
                     </div>
@@ -612,10 +717,8 @@
 
             <!-- FOOTER -->
             <footer class="app-footer">
-
                 © 2026 Smart Corporate Cafeteria Management System.
                 All rights reserved.
-
             </footer>
 
         </div>

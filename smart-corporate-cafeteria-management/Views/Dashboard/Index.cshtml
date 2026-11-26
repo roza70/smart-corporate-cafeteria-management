@@ -1,316 +1,121 @@
 ﻿@{
     ViewData["Title"] = "Admin Dashboard";
-
-    var totalEmployees = ViewBag.TotalEmployees ?? 0;
-    var departments = ViewBag.Departments ?? 0;
-    var dailyMenus = ViewBag.DailyMenus ?? 0;
-    var mealCollections = ViewBag.MealCollections ?? 0;
 }
 
-<div class="container-fluid px-0">
+<div class="container-fluid py-4">
 
-    <!-- Welcome Section -->
-    <div class="p-4 p-lg-5 rounded-4 mb-4 text-white"
-         style="background:linear-gradient(120deg,#344fc4,#647cf4);">
-
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-
-                <span class="badge bg-white text-primary mb-3">
-                    ADMINISTRATOR PANEL
-                </span>
-
-                <h3 class="fw-bold mb-2">
-                    Welcome to Smart Cafeteria!
-                </h3>
-
-                <p class="mb-0 opacity-75">
-                    Manage employees, departments and daily cafeteria
-                    operations from one central dashboard.
-                </p>
-
-            </div>
-
-            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
-                <i class="bi bi-cup-hot-fill"
-                   style="font-size:75px;opacity:.25;"></i>
-            </div>
-        </div>
+    <!-- Dashboard Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold">Admin Dashboard</h2>
+        <p class="text-muted">
+            Welcome to Smart Corporate Cafeteria Management System.
+            Manage your cafeteria operations from here.
+        </p>
     </div>
 
-    <!-- Statistics Heading -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h5 class="fw-bold mb-1">Overview</h5>
-            <p class="text-muted small mb-0">
-                Current cafeteria management statistics
-            </p>
-        </div>
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-4">
 
-        <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
-            <i class="bi bi-circle-fill me-1" style="font-size:7px;"></i>
-            System Overview
-        </span>
-    </div>
-
-    <!-- Statistics Cards -->
-    <div class="row g-3 mb-4">
-
-        <!-- Employees -->
-        <div class="col-sm-6 col-xl-3">
+        <!-- Total Employees -->
+        <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-4">
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center"
-                             style="width:48px;height:48px;background:#eaf0ff;color:#4f6bed;">
-                            <i class="bi bi-people-fill fs-4"></i>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted">Total Employees</h6>
+                            <h2 class="fw-bold mb-0">
+                                @ViewBag.TotalEmployees
+                            </h2>
                         </div>
-
-                        <span class="text-muted small">Employees</span>
+                        <div class="fs-1 text-primary">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
                     </div>
-
-                    <h2 class="fw-bold mb-1">@totalEmployees</h2>
-                    <p class="text-muted small mb-0">Total registered employees</p>
-
-                    <a asp-controller="Employee" asp-action="Index"
-                       class="small text-decoration-none fw-semibold mt-3 d-inline-block">
-                        View Employees <i class="bi bi-arrow-right"></i>
-                    </a>
-
                 </div>
             </div>
         </div>
 
         <!-- Departments -->
-        <div class="col-sm-6 col-xl-3">
+        <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-4">
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center"
-                             style="width:48px;height:48px;background:#e8f8f0;color:#16a36a;">
-                            <i class="bi bi-diagram-3-fill fs-4"></i>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted">Departments</h6>
+                            <h2 class="fw-bold mb-0">
+                                @ViewBag.Departments
+                            </h2>
                         </div>
-
-                        <span class="text-muted small">Departments</span>
+                        <div class="fs-1 text-success">
+                            <i class="bi bi-building"></i>
+                        </div>
                     </div>
-
-                    <h2 class="fw-bold mb-1">@departments</h2>
-                    <p class="text-muted small mb-0">Registered departments</p>
-
-                    <a asp-controller="Department" asp-action="Index"
-                       class="small text-decoration-none fw-semibold mt-3 d-inline-block">
-                        View Departments <i class="bi bi-arrow-right"></i>
-                    </a>
-
                 </div>
             </div>
         </div>
 
-        <!-- Daily Menu -->
-        <div class="col-sm-6 col-xl-3">
+        <!-- Daily Menus -->
+        <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-4">
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center"
-                             style="width:48px;height:48px;background:#fff3e5;color:#ed9638;">
-                            <i class="bi bi-calendar3 fs-4"></i>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted">Daily Menus</h6>
+                            <h2 class="fw-bold mb-0">
+                                @ViewBag.DailyMenus
+                            </h2>
                         </div>
-
-                        <span class="text-muted small">Daily Menu</span>
+                        <div class="fs-1 text-warning">
+                            <i class="bi bi-egg-fried"></i>
+                        </div>
                     </div>
-
-                    <h2 class="fw-bold mb-1">@dailyMenus</h2>
-                    <p class="text-muted small mb-0">Available menu records</p>
-
-                    <span class="small text-muted mt-3 d-inline-block">
-                        Menu management
-                    </span>
-
                 </div>
             </div>
         </div>
 
         <!-- Meal Collections -->
-        <div class="col-sm-6 col-xl-3">
+        <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-4">
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center"
-                             style="width:48px;height:48px;background:#f2eaff;color:#9161d5;">
-                            <i class="bi bi-qr-code-scan fs-4"></i>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted">Meal Collections</h6>
+                            <h2 class="fw-bold mb-0">
+                                @ViewBag.MealCollections
+                            </h2>
                         </div>
-
-                        <span class="text-muted small">Meal Collections</span>
+                        <div class="fs-1 text-info">
+                            <i class="bi bi-basket-fill"></i>
+                        </div>
                     </div>
-
-                    <h2 class="fw-bold mb-1">@mealCollections</h2>
-                    <p class="text-muted small mb-0">Recorded meal collections</p>
-
-                    <span class="small text-muted mt-3 d-inline-block">
-                        Meal collection management
-                    </span>
-
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- Management Section -->
-    <div class="row g-4">
+    <!-- Quick Actions -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
 
-        <div class="col-lg-7">
+            <h4 class="fw-bold mb-3">Quick Actions</h4>
 
-            <div class="card border-0 shadow-sm rounded-4 h-100">
+            <p class="text-muted mb-4">
+                Quickly access important cafeteria management operations.
+            </p>
 
-                <div class="card-body p-4">
+            <div class="d-flex flex-wrap gap-3">
 
-                    <h5 class="fw-bold mb-1">Quick Actions</h5>
-                    <p class="text-muted small mb-4">
-                        Frequently used management operations
-                    </p>
+                <a asp-controller="StaffAccount"
+                   asp-action="Create"
+                   class="btn btn-success px-4 py-2">
+                    <i class="bi bi-person-plus me-2"></i>
+                    Create Staff Account
+                </a>
 
-                    <div class="row g-3">
-
-                        <div class="col-md-6">
-                            <a asp-controller="Employee"
-                               asp-action="Create"
-                               class="text-decoration-none">
-                                <div class="p-3 rounded-3 h-100 border">
-                                    <i class="bi bi-person-plus-fill fs-3 text-primary"></i>
-                                    <h6 class="fw-bold mt-3 mb-1 text-dark">
-                                        Add Employee
-                                    </h6>
-                                    <p class="text-muted small mb-0">
-                                        Register a new employee.
-                                    </p>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="col-md-6">
-                            <a asp-controller="Department"
-                               asp-action="Create"
-                               class="text-decoration-none">
-                                <div class="p-3 rounded-3 h-100 border">
-                                    <i class="bi bi-building-add fs-3 text-success"></i>
-                                    <h6 class="fw-bold mt-3 mb-1 text-dark">
-                                        Add Department
-                                    </h6>
-                                    <p class="text-muted small mb-0">
-                                        Create a new department.
-                                    </p>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="col-md-6">
-                            <a asp-controller="Employee"
-                               asp-action="Index"
-                               class="text-decoration-none">
-                                <div class="p-3 rounded-3 h-100 border">
-                                    <i class="bi bi-people fs-3 text-warning"></i>
-                                    <h6 class="fw-bold mt-3 mb-1 text-dark">
-                                        Manage Employees
-                                    </h6>
-                                    <p class="text-muted small mb-0">
-                                        View and update employee records.
-                                    </p>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="col-md-6">
-                            <a asp-controller="Department"
-                               asp-action="Index"
-                               class="text-decoration-none">
-                                <div class="p-3 rounded-3 h-100 border">
-                                    <i class="bi bi-diagram-3 fs-3 text-info"></i>
-                                    <h6 class="fw-bold mt-3 mb-1 text-dark">
-                                        Manage Departments
-                                    </h6>
-                                    <p class="text-muted small mb-0">
-                                        View department information.
-                                    </p>
-                                </div>
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
             </div>
 
         </div>
-
-        <!-- System Information -->
-        <div class="col-lg-5">
-
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-
-                <div class="card-body p-4">
-
-                    <h5 class="fw-bold mb-1">System Overview</h5>
-                    <p class="text-muted small mb-4">
-                        Current project implementation status
-                    </p>
-
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center"
-                             style="width:44px;height:44px;background:#e8f8f0;color:#16a36a;">
-                            <i class="bi bi-check-circle-fill fs-5"></i>
-                        </div>
-
-                        <div>
-                            <h6 class="fw-semibold mb-1">Employee Management</h6>
-                            <small class="text-success">Implemented</small>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center"
-                             style="width:44px;height:44px;background:#e8f8f0;color:#16a36a;">
-                            <i class="bi bi-check-circle-fill fs-5"></i>
-                        </div>
-
-                        <div>
-                            <h6 class="fw-semibold mb-1">Department Management</h6>
-                            <small class="text-success">Implemented</small>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center"
-                             style="width:44px;height:44px;background:#fff3e5;color:#ed9638;">
-                            <i class="bi bi-hourglass-split fs-5"></i>
-                        </div>
-
-                        <div>
-                            <h6 class="fw-semibold mb-1">Daily Menu Management</h6>
-                            <small class="text-muted">Upcoming module</small>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center"
-                             style="width:44px;height:44px;background:#fff3e5;color:#ed9638;">
-                            <i class="bi bi-hourglass-split fs-5"></i>
-                        </div>
-
-                        <div>
-                            <h6 class="fw-semibold mb-1">Meal Collection</h6>
-                            <small class="text-muted">Upcoming module</small>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
     </div>
 
 </div>

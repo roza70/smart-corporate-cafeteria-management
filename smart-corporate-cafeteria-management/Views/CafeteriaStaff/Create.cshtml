@@ -1,0 +1,200 @@
+﻿@model smart_corporate_cafeteria_management.ViewModels.CafeteriaStaffViewModel
+
+@{
+    ViewData["Title"] = "Add New Staff";
+}
+
+<div class="container-fluid py-3">
+
+    <div class="mb-4">
+        <a asp-controller="CafeteriaStaff"
+           asp-action="Index"
+           class="text-decoration-none text-muted">
+            <i class="bi bi-arrow-left me-2"></i>Back to Staff List
+        </a>
+
+        <h2 class="fw-bold mt-3 mb-1">Add New Staff</h2>
+        <p class="text-muted">
+            Enter the staff member's personal and employment information.
+        </p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-lg-5">
+
+            <form asp-action="Create" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger">
+                </div>
+
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-person me-2"></i>
+                    Personal Information
+                </h5>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label asp-for="StaffName" class="form-label">
+                            Staff Name *
+                        </label>
+                        <input asp-for="StaffName"
+                               class="form-control"
+                               placeholder="Enter full name" />
+                        <span asp-validation-for="StaffName"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="NIDNumber" class="form-label">
+                            NID Number *
+                        </label>
+                        <input asp-for="NIDNumber"
+                               class="form-control"
+                               placeholder="Enter NID number" />
+                        <span asp-validation-for="NIDNumber"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Gender" class="form-label">
+                            Gender *
+                        </label>
+                        <select asp-for="Gender" class="form-select">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span asp-validation-for="Gender"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="DateOfBirth" class="form-label">
+                            Date of Birth *
+                        </label>
+                        <input asp-for="DateOfBirth"
+                               type="date"
+                               class="form-control" />
+                        <span asp-validation-for="DateOfBirth"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label">
+                            Phone Number
+                        </label>
+                        <input asp-for="PhoneNumber"
+                               class="form-control"
+                               placeholder="Enter phone number" />
+                        <span asp-validation-for="PhoneNumber"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Address" class="form-label">
+                            Address
+                        </label>
+                        <input asp-for="Address"
+                               class="form-control"
+                               placeholder="Enter address" />
+                    </div>
+
+                </div>
+
+                <hr class="my-4" />
+
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-briefcase me-2"></i>
+                    Employment Information
+                </h5>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label asp-for="StaffRole" class="form-label">
+                            Staff Designation *
+                        </label>
+
+                        <select asp-for="StaffRole"
+                                asp-items="ViewBag.AvailableRoles"
+                                class="form-select">
+                            <option value="">Select Designation</option>
+                        </select>
+
+                        <span asp-validation-for="StaffRole"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="JoiningDate" class="form-label">
+                            Joining Date *
+                        </label>
+                        <input asp-for="JoiningDate"
+                               type="date"
+                               class="form-control" />
+                        <span asp-validation-for="JoiningDate"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Salary" class="form-label">
+                            Monthly Salary
+                        </label>
+                        <input asp-for="Salary"
+                               type="number"
+                               step="0.01"
+                               class="form-control"
+                               placeholder="Enter monthly salary" />
+                        <span asp-validation-for="Salary"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label d-block">Staff Status</label>
+
+                        <div class="form-check form-switch mt-2">
+                            <input asp-for="Status"
+                                   class="form-check-input"
+                                   type="checkbox" />
+                            <label asp-for="Status"
+                                   class="form-check-label">
+                                Active Staff
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a asp-controller="CafeteriaStaff"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+                        <i class="bi bi-check-circle me-2"></i>
+                        Save Staff
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

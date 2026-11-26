@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Employee Dashboard";
+    var employee = ViewBag.Employee;
+    var menuItems = ViewBag.TodayMenuItems as List<string> ?? new List<string>();
+    var history = ViewBag.CollectionHistory as IEnumerable<dynamic>;
+}
+
+<div class="container-fluid py-4">
+
+    <div class="p-4 mb-4 rounded-4 text-white"
+         style="background: linear-gradient(120deg, #176b50, #26966e);">
+        <h2 class="fw-bold">Welcome, @employee.EmployeeName!</h2>
+        <p class="mb-0">Your personal cafeteria dashboard</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Employee ID</h6>
+                    <h3 class="fw-bold">@employee.EmployeeId</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Today's Meal Collections</h6>
+                    <h3 class="fw-bold">@ViewBag.TodayCollections</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Today's Menu Items</h6>
+                    <h3 class="fw-bold">@menuItems.Count</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3">My Profile</h4>
+
+                    <p><strong>Name:</strong> @employee.EmployeeName</p>
+                    <p><strong>Email:</strong> @employee.Email</p>
+                    <p><strong>Phone:</strong> @employee.Phone</p>
+                    <p><strong>Employee ID:</strong> @employee.EmployeeId</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3">Today's Lunch Menu</h4>
+
+                    @if (menuItems.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in menuItems)
+                            {
+                                <li class="list-group-item">
+                                    <span class="text-success me-2">●</span>
+                                    @item
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Today's menu has not been published yet.</p>
+                    }
+
+                    <p class="text-muted mt-3 mb-0">
+                        Employee lunch is provided free of charge.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3">My Meal Collection History</h4>
+
+                    @if (history != null && history.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var collection in history)
+                                    {
+                                        <tr>
+                                            <td>@collection.CollectionDate.ToString("dd MMM yyyy")</td>
+                                            <td>@collection.CollectionTime</td>
+                                            <td>
+                                                <span class="badge bg-success">
+                                                    @collection.Status
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">
+                            You don't have any meal collection history yet.
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

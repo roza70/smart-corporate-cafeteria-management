@@ -10,11 +10,14 @@ namespace smart_corporate_cafeteria_management.Controllers
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public AccountController(
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         // GET: Account/Login
@@ -49,13 +52,47 @@ namespace smart_corporate_cafeteria_management.Controllers
 
             if (result.Succeeded)
             {
+                // Get the currently logged-in user
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                // Respect a valid local return URL
                 if (!string.IsNullOrEmpty(returnUrl) &&
                     Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
                 }
 
-                return RedirectToAction("Index", "Dashboard");
+                if (user != null)
+                {
+                    // Admin Dashboard
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        return RedirectToAction("Index", "Dashboard");
+                    }
+
+                    // Kitchen Staff Dashboard
+                    if (await _userManager.IsInRoleAsync(user, "Kitchen Staff"))
+                    {
+                        return RedirectToAction("Index", "KitchenStaff");
+                    }
+
+                    // Employee Dashboard
+                    if (await _userManager.IsInRoleAsync(user, "Employee"))
+                    {
+                        return RedirectToAction("Index", "EmployeeDashboard");
+                    }
+
+                    // Procurement Staff Dashboard
+                    if (await _userManager.IsInRoleAsync(user, "Procurement Staff"))
+                    {
+                        return RedirectToAction("Index", "ProcurementStaff");
+                    }
+                }
+
+                // User has no recognized role
+                await _signInManager.SignOutAsync();
+
+                return RedirectToAction("AccessDenied", "Account");
             }
 
             if (result.IsLockedOut)

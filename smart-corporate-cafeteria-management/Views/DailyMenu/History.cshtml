@@ -1,0 +1,158 @@
+﻿@model IEnumerable<smart_corporate_cafeteria_management.Models.DailyMenu>
+
+@{
+    ViewData["Title"] = "Menu History";
+}
+
+<div class="container-fluid mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Menu History</h2>
+            <p class="text-muted">
+                View previously created cafeteria menus.
+            </p>
+        </div>
+
+        <a asp-controller="DailyMenu"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Daily Menu
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form asp-controller="DailyMenu"
+                  asp-action="History"
+                  method="get"
+                  class="row g-3 align-items-end">
+
+                <div class="col-md-5">
+                    <label class="form-label fw-semibold">
+                        Search Menu by Date
+                    </label>
+
+                    <input type="date"
+                           name="date"
+                           value="@ViewBag.SelectedDate"
+                           class="form-control" />
+                </div>
+
+                <div class="col-md-3">
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+                        <i class="bi bi-search me-2"></i>
+                        Search
+                    </button>
+                </div>
+
+                <div class="col-md-3">
+                    <a asp-controller="DailyMenu"
+                       asp-action="History"
+                       class="btn btn-outline-secondary w-100">
+                        Clear Filter
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+
+            <h5 class="fw-bold mb-3">Previous Menus</h5>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Menu ID</th>
+                            <th>Menu Date</th>
+                            <th>Description</th>
+                            <th>Food Items</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var menu in Model)
+                            {
+                                <tr>
+                                    <td>@menu.MenuID</td>
+
+                                    <td>
+                                        @menu.MenuDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        @(menu.Description ?? "No description")
+                                    </td>
+
+                                    <td>
+                                        @if (menu.DailyMenuItems.Any())
+                                        {
+                                            @foreach (var item in menu.DailyMenuItems)
+                                            {
+                                                <span class="badge bg-light text-dark border me-1 mb-1">
+                                                    @(item.FoodItem?.FoodName ?? "Unknown Food")
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No food items</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (menu.IsPublished)
+                                        {
+                                            <span class="badge bg-success">
+                                                Published
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                Draft
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <a asp-controller="DailyMenu"
+                                           asp-action="Details"
+                                           asp-route-id="@menu.MenuID"
+                                           class="btn btn-sm btn-outline-primary">
+                                            View Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6"
+                                    class="text-center text-muted py-4">
+                                    No previous menus found.
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>

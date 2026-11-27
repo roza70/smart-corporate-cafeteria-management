@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using smart_corporate_cafeteria_management.Models;
 
 namespace smart_corporate_cafeteria_management.Controllers
 {
+    [Authorize(Roles = "Admin,Kitchen Staff")]
     public class FoodItemController : Controller
     {
         private readonly CafeteriaDbContext _context;
@@ -17,7 +19,6 @@ namespace smart_corporate_cafeteria_management.Controllers
         }
 
         // GET: FoodItem
-
         public async Task<IActionResult> Index(
             string? searchString,
             int? categoryId,
@@ -36,12 +37,14 @@ namespace smart_corporate_cafeteria_management.Controllers
                      f.FoodCategory.CategoryName.Contains(searchString)));
             }
 
+            // Filter by Category
             if (categoryId.HasValue)
             {
                 foodItems = foodItems.Where(f =>
                     f.CategoryID == categoryId.Value);
             }
 
+            // Filter by Status
             if (status == "Active")
             {
                 foodItems = foodItems.Where(f => f.IsActive);
@@ -61,15 +64,15 @@ namespace smart_corporate_cafeteria_management.Controllers
             ViewBag.SelectedStatus = status;
 
             var result = await foodItems
-                .OrderBy(f => f.FoodCategory != null &&
-                              f.FoodCategory.CategoryName == "Rice" ? 0 : 1)
+                .OrderBy(f =>
+                    f.FoodCategory != null &&
+                    f.FoodCategory.CategoryName == "Rice" ? 0 : 1)
                 .ThenBy(f => f.FoodCategory!.CategoryName)
                 .ThenBy(f => f.FoodName)
                 .ToListAsync();
 
             return View(result);
         }
-
 
         // GET: FoodItem/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -88,9 +91,15 @@ namespace smart_corporate_cafeteria_management.Controllers
         }
 
         // GET: FoodItem/Create
-        public async Task<IActionResult> Create()
+        // Supports category selection and return URL
+        public async Task<IActionResult> Create(
+            int? categoryId,
+            string? returnTo)
         {
-            await LoadCategoriesAsync();
+            await LoadCategoriesAsync(categoryId);
+
+            ViewBag.ReturnTo = returnTo;
+
             return View();
         }
 
@@ -98,25 +107,52 @@ namespace smart_corporate_cafeteria_management.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("FoodName,CategoryID,Description,IsActive")] FoodItem foodItem)
+            [Bind("FoodName,CategoryID,Description,IsActive")] FoodItem foodItem,
+            string? returnTo)
         {
+            // Validate Category
             if (!await _context.FoodCategories
                 .AnyAsync(c => c.CategoryID == foodItem.CategoryID))
             {
                 ModelState.AddModelError(
-                    "CategoryID", "Please select a valid category.");
+                    "CategoryID",
+                    "Please select a valid category.");
+            }
+
+            // Prevent duplicate food item in the same category
+            if (!string.IsNullOrWhiteSpace(foodItem.FoodName) &&
+                await _context.FoodItems.AnyAsync(f =>
+                    f.FoodName == foodItem.FoodName &&
+                    f.CategoryID == foodItem.CategoryID))
+            {
+                ModelState.AddModelError(
+                    "FoodName",
+                    "This food item already exists in this category.");
             }
 
             if (ModelState.IsValid)
             {
                 _context.FoodItems.Add(foodItem);
+
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "Food item created successfully!";
+                TempData["SuccessMessage"] =
+                    "New food item added successfully!";
+
+                // Return to Daily Menu page
+                if (!string.IsNullOrWhiteSpace(returnTo) &&
+                    Url.IsLocalUrl(returnTo))
+                {
+                    return Redirect(returnTo);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
 
             await LoadCategoriesAsync(foodItem.CategoryID);
+
+            ViewBag.ReturnTo = returnTo;
+
             return View(foodItem);
         }
 
@@ -126,13 +162,13 @@ namespace smart_corporate_cafeteria_management.Controllers
             if (id == null)
                 return NotFound();
 
-            var foodItem = await _context.FoodItems
-                .FindAsync(id);
+            var foodItem = await _context.FoodItems.FindAsync(id);
 
             if (foodItem == null)
                 return NotFound();
 
             await LoadCategoriesAsync(foodItem.CategoryID);
+
             return View(foodItem);
         }
 
@@ -150,7 +186,20 @@ namespace smart_corporate_cafeteria_management.Controllers
                 .AnyAsync(c => c.CategoryID == foodItem.CategoryID))
             {
                 ModelState.AddModelError(
-                    "CategoryID", "Please select a valid category.");
+                    "CategoryID",
+                    "Please select a valid category.");
+            }
+
+            // Prevent duplicate food item in the same category
+            if (!string.IsNullOrWhiteSpace(foodItem.FoodName) &&
+                await _context.FoodItems.AnyAsync(f =>
+                    f.FoodName == foodItem.FoodName &&
+                    f.CategoryID == foodItem.CategoryID &&
+                    f.FoodItemId != id))
+            {
+                ModelState.AddModelError(
+                    "FoodName",
+                    "This food item already exists in this category.");
             }
 
             if (ModelState.IsValid)
@@ -158,9 +207,11 @@ namespace smart_corporate_cafeteria_management.Controllers
                 try
                 {
                     _context.FoodItems.Update(foodItem);
+
                     await _context.SaveChangesAsync();
 
-                    TempData["SuccessMessage"] = "Food item updated successfully!";
+                    TempData["SuccessMessage"] =
+                        "Food item updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -177,10 +228,12 @@ namespace smart_corporate_cafeteria_management.Controllers
             }
 
             await LoadCategoriesAsync(foodItem.CategoryID);
+
             return View(foodItem);
         }
 
         // GET: FoodItem/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -197,6 +250,7 @@ namespace smart_corporate_cafeteria_management.Controllers
         }
 
         // POST: FoodItem/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -212,19 +266,23 @@ namespace smart_corporate_cafeteria_management.Controllers
                 {
                     TempData["ErrorMessage"] =
                         "This food item is already used in a daily menu. Deactivate it instead.";
+
                     return RedirectToAction(nameof(Index));
                 }
 
                 _context.FoodItems.Remove(foodItem);
+
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "Food item deleted successfully!";
+                TempData["SuccessMessage"] =
+                    "Food item deleted successfully!";
             }
 
             return RedirectToAction(nameof(Index));
         }
 
         // POST: FoodItem/ToggleStatus/5
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleStatus(int id)
@@ -246,7 +304,8 @@ namespace smart_corporate_cafeteria_management.Controllers
         }
 
         // Load Food Categories
-        private async Task LoadCategoriesAsync(int? selectedCategory = null)
+        private async Task LoadCategoriesAsync(
+            int? selectedCategory = null)
         {
             var categories = await _context.FoodCategories
                 .OrderBy(c => c.CategoryName)

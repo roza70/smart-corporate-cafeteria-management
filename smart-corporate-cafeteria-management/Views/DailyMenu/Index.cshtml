@@ -4,8 +4,9 @@
     ViewData["Title"] = "Daily Menu";
 }
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
+    <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold">Daily Menu</h2>
@@ -14,17 +15,61 @@
             </p>
         </div>
 
-        <a asp-controller="DailyMenu"
-           asp-action="Create"
-           class="btn btn-primary">
-            + Create New Menu
-        </a>
+        <div class="d-flex gap-2 flex-wrap">
+
+            <a asp-controller="DailyMenu"
+               asp-action="History"
+               class="btn btn-outline-secondary">
+                <i class="bi bi-clock-history me-2"></i>
+                Menu History
+            </a>
+
+            <a asp-controller="DailyMenu"
+               asp-action="Create"
+               class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>
+                Create New Menu
+            </a>
+
+        </div>
     </div>
 
-    <div class="card shadow-sm border-0">
+    <!-- Success Message -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    }
+
+    <!-- Error Message -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            @TempData["ErrorMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    }
+
+    <!-- Daily Menu Table -->
+    <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body">
 
             <div class="table-responsive">
+
                 <table class="table table-hover align-middle">
 
                     <thead class="table-light">
@@ -32,6 +77,7 @@
                             <th>Menu ID</th>
                             <th>Menu Date</th>
                             <th>Description</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -43,7 +89,10 @@
                             @foreach (var menu in Model)
                             {
                                 <tr>
-                                    <td>@menu.MenuID</td>
+
+                                    <td class="fw-semibold">
+                                        @menu.MenuID
+                                    </td>
 
                                     <td>
                                         @menu.MenuDate.ToString("dd MMM yyyy")
@@ -53,6 +102,24 @@
                                         @(menu.Description ?? "No description")
                                     </td>
 
+                                    <!-- Menu Status -->
+                                    <td>
+                                        @if (menu.IsPublished)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>
+                                                Published
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                Draft
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <!-- Menu Actions -->
                                     <td>
                                         <div class="d-flex gap-2 flex-wrap">
 
@@ -70,6 +137,40 @@
                                                 + Add Food
                                             </a>
 
+                                            @if (!menu.IsPublished)
+                                            {
+                                                <form asp-controller="DailyMenu"
+                                                      asp-action="Publish"
+                                                      asp-route-id="@menu.MenuID"
+                                                      method="post">
+
+                                                    @Html.AntiForgeryToken()
+
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-send me-1"></i>
+                                                        Publish
+                                                    </button>
+
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form asp-controller="DailyMenu"
+                                                      asp-action="Unpublish"
+                                                      asp-route-id="@menu.MenuID"
+                                                      method="post">
+
+                                                    @Html.AntiForgeryToken()
+
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-secondary">
+                                                        Unpublish
+                                                    </button>
+
+                                                </form>
+                                            }
+
                                             <a asp-controller="DailyMenu"
                                                asp-action="Edit"
                                                asp-route-id="@menu.MenuID"
@@ -86,14 +187,16 @@
 
                                         </div>
                                     </td>
+
                                 </tr>
                             }
                         }
                         else
                         {
                             <tr>
-                                <td colspan="4"
+                                <td colspan="5"
                                     class="text-center text-muted py-4">
+                                    <i class="bi bi-calendar-x fs-3 d-block mb-2"></i>
                                     No daily menus found.
                                 </td>
                             </tr>
@@ -102,6 +205,7 @@
                     </tbody>
 
                 </table>
+
             </div>
 
         </div>

@@ -1,0 +1,411 @@
+﻿@using smart_corporate_cafeteria_management.Models
+
+@{
+    ViewData["Title"] = "Daily Food Menu";
+
+    var menus = ViewBag.PublishedMenus as List<DailyMenu>
+        ?? new List<DailyMenu>();
+
+    var today = DateTime.Today;
+    var todayMenu = menus.FirstOrDefault(m =>
+        m.MenuDate.Date == today);
+
+    var previousMenus = menus
+        .Where(m => m.MenuDate.Date < today)
+        .ToList();
+
+    var categories = new[]
+    {
+        "Rice",
+        "Meat and Fish",
+        "Vegetables",
+        "Dal",
+        "Salad"
+    };
+}
+
+<style>
+    .menu-page {
+        color: #293B30;
+    }
+
+    .menu-hero {
+        background: linear-gradient(120deg, #244B36, #356849);
+        color: white;
+        padding: 30px;
+        border-radius: 18px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 25px;
+    }
+
+        .menu-hero h2 {
+            font-size: 27px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .menu-hero p {
+            color: #E3EDE5;
+            margin-bottom: 15px;
+        }
+
+    .menu-date {
+        display: inline-block;
+        background: rgba(255,255,255,.15);
+        padding: 8px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+    }
+
+    .free-lunch {
+        display: inline-block;
+        background: #F4B183;
+        color: #71301F;
+        padding: 8px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-left: 7px;
+    }
+
+    .section-heading {
+        font-size: 19px;
+        font-weight: 800;
+        color: #244B36;
+        margin-bottom: 17px;
+    }
+
+    .today-card {
+        background: white;
+        border: 1px solid #F0E6DE;
+        border-radius: 15px;
+        padding: 20px;
+        height: 100%;
+        transition: .2s;
+    }
+
+        .today-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(75, 55, 35, .08);
+        }
+
+    .food-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        background: #FFF0E5;
+        color: #A94730;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 14px;
+    }
+
+    .food-category {
+        font-size: 11px;
+        color: #A94730;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        margin-bottom: 6px;
+    }
+
+    .food-name {
+        font-size: 16px;
+        font-weight: 750;
+        color: #244B36;
+        margin: 0;
+    }
+
+    .empty-menu {
+        background: white;
+        border: 1px dashed #D8C5B8;
+        border-radius: 15px;
+        padding: 35px 20px;
+        text-align: center;
+        color: #8B817A;
+    }
+
+        .empty-menu i {
+            font-size: 35px;
+            color: #A94730;
+        }
+
+    .history-card {
+        background: white;
+        border: 1px solid #F0E6DE;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+
+    .history-date {
+        color: #A94730;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .history-food {
+        background: #FFF8F2;
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin-top: 9px;
+        font-size: 13px;
+    }
+
+        .history-food strong {
+            color: #244B36;
+        }
+
+    .published-badge {
+        background: #E5F4E9;
+        color: #267342;
+        padding: 6px 11px;
+        border-radius: 30px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .menu-divider {
+        border: 0;
+        border-top: 1px solid #F0E6DE;
+        margin: 25px 0;
+    }
+
+    @@media(max-width: 576px) {
+        .menu-hero {
+            padding: 22px;
+        }
+
+            .menu-hero h2 {
+                font-size: 22px;
+            }
+
+        .free-lunch {
+            margin: 8px 0 0;
+        }
+    }
+</style>
+
+<div class="menu-page">
+
+    <!-- HERO SECTION -->
+    <div class="menu-hero">
+
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+
+            <div>
+                <div class="mb-2">
+                    <i class="bi bi-cup-hot-fill me-2"></i>
+                    EMPLOYEE CAFETERIA
+                </div>
+
+                <h2>Today's Kitchen Specials</h2>
+
+                <p>
+                    Freshly prepared lunch menu for our employees.
+                </p>
+
+                <span class="menu-date">
+                    <i class="bi bi-calendar3 me-1"></i>
+                    @today.ToString("dddd, dd MMMM yyyy")
+                </span>
+
+                <span class="free-lunch">
+                    <i class="bi bi-gift-fill me-1"></i>
+                    Free Employee Lunch
+                </span>
+            </div>
+
+            <div class="text-end">
+                <i class="bi bi-egg-fried"
+                   style="font-size:65px;color:#F4B183;"></i>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TODAY'S MENU -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h3 class="section-heading">
+            <i class="bi bi-stars me-2"></i>
+            Today's Food Menu
+        </h3>
+
+        <span class="published-badge">
+            <i class="bi bi-check-circle-fill me-1"></i>
+            Published Menu
+        </span>
+    </div>
+
+    @if (todayMenu != null &&
+         todayMenu.DailyMenuItems != null &&
+         todayMenu.DailyMenuItems.Any(mi =>
+             mi.FoodItem != null && mi.FoodItem.IsActive))
+    {
+        var todayItems = todayMenu.DailyMenuItems
+            .Where(mi => mi.FoodItem != null && mi.FoodItem.IsActive)
+            .ToList();
+
+        <div class="row g-3">
+
+            @foreach (var category in categories)
+            {
+                var food = todayItems.FirstOrDefault(mi =>
+                    mi.FoodItem!.FoodCategory != null &&
+                    mi.FoodItem.FoodCategory.CategoryName == category);
+
+                if (food != null)
+                {
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="today-card">
+
+                            <div class="food-icon">
+                                @switch (category)
+                                {
+                                    case "Rice":
+                                        <i class="bi bi-bowl-hot-fill"></i>
+                                        break;
+
+                                    case "Meat and Fish":
+                                        <i class="bi bi-egg-fried"></i>
+                                        break;
+
+                                    case "Vegetables":
+                                        <i class="bi bi-flower1"></i>
+                                        break;
+
+                                    case "Dal":
+                                        <i class="bi bi-cup-hot"></i>
+                                        break;
+
+                                    case "Salad":
+                                        <i class="bi bi-leaf-fill"></i>
+                                        break;
+                                }
+                            </div>
+
+                            <div class="food-category">
+                                @category
+                            </div>
+
+                            <h4 class="food-name">
+                                @food.FoodItem!.FoodName
+                            </h4>
+
+                        </div>
+
+                    </div>
+                }
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="empty-menu">
+            <i class="bi bi-calendar-x d-block mb-3"></i>
+
+            <h5 class="fw-bold">Today's Menu Is Not Available</h5>
+
+            <p class="mb-0">
+                The kitchen has not published today's lunch menu yet.
+                Please check again later.
+            </p>
+        </div>
+    }
+
+    <!-- PREVIOUS MENUS -->
+    <hr class="menu-divider" />
+
+    <h3 class="section-heading">
+        <i class="bi bi-clock-history me-2"></i>
+        Previous Published Menus
+    </h3>
+
+    @if (previousMenus.Any())
+    {
+        @foreach (var menu in previousMenus)
+        {
+            var menuItems = menu.DailyMenuItems?
+                .Where(mi => mi.FoodItem != null &&
+                             mi.FoodItem.IsActive)
+                .ToList();
+
+            <div class="history-card">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                    <div>
+                        <div class="history-date">
+                            <i class="bi bi-calendar-event me-1"></i>
+                            @menu.MenuDate.ToString("dddd, dd MMMM yyyy")
+                        </div>
+
+                        <h5 class="fw-bold mt-2 mb-0">
+                            @(!string.IsNullOrWhiteSpace(menu.Description)
+                                ? menu.Description
+                                : "Daily Employee Lunch")
+                        </h5>
+                    </div>
+
+                    <span class="published-badge">
+                        <i class="bi bi-check-circle-fill me-1"></i>
+                        Published
+                    </span>
+
+                </div>
+
+                @if (menuItems != null && menuItems.Any())
+                {
+                    <div class="row g-2 mt-2">
+
+                        @foreach (var item in menuItems)
+                        {
+                            <div class="col-12 col-sm-6 col-lg-4">
+
+                                <div class="history-food">
+
+                                    <strong>
+                                        @(item.FoodItem!.FoodCategory?.CategoryName
+                                            ?? "Food")
+                                    </strong>
+
+                                    <div class="mt-1">
+                                        @item.FoodItem.FoodName
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted small mt-3 mb-0">
+                        No active food items available.
+                    </p>
+                }
+
+            </div>
+        }
+    }
+    else
+    {
+        <div class="empty-menu">
+            <i class="bi bi-journal-text d-block mb-3"></i>
+
+            <h5 class="fw-bold">No Previous Menu Found</h5>
+
+            <p class="mb-0">
+                Previous published lunch menus will appear here.
+            </p>
+        </div>
+    }
+
+</div>

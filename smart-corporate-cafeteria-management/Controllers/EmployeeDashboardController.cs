@@ -22,6 +22,7 @@ namespace smart_corporate_cafeteria_management.Controllers
             _userManager = userManager;
         }
 
+        // Employee Dashboard
         public async Task<IActionResult> Index()
         {
             // Get currently logged-in employee account
@@ -48,18 +49,32 @@ namespace smart_corporate_cafeteria_management.Controllers
                 return Forbid();
             }
 
-            // Today's Menu
+            // Today's Published Menu Only
             var todayMenu = await _context.DailyMenus
                 .AsNoTracking()
                 .Include(m => m.DailyMenuItems)
                     .ThenInclude(mi => mi.FoodItem)
-                .FirstOrDefaultAsync(m => m.MenuDate == today);
+                        .ThenInclude(f => f!.FoodCategory)
+                .Where(m =>
+                    m.IsPublished &&
+                    m.MenuDate >= today &&
+                    m.MenuDate < tomorrow)
+                .FirstOrDefaultAsync();
 
-            // Today's Food Items
+            // Today's Published Food Items with Category Names
             var todayMenuItems = todayMenu?.DailyMenuItems
-                .Where(mi => mi.FoodItem != null)
-                .Select(mi => mi.FoodItem!.FoodName)
-                .ToList() ?? new List<string>();
+                .Where(mi =>
+                    mi.FoodItem != null &&
+                    mi.FoodItem.IsActive)
+                .Select(mi => new
+                {
+                    CategoryName = mi.FoodItem!.FoodCategory != null
+                        ? mi.FoodItem.FoodCategory.CategoryName
+                        : "Uncategorized",
+
+                    FoodName = mi.FoodItem!.FoodName
+                })
+                .ToList();
 
             // This Employee's Meal Collections Today
             var todayCollections = await _context.MealCollections
@@ -78,11 +93,36 @@ namespace smart_corporate_cafeteria_management.Controllers
                 .Take(10)
                 .ToListAsync();
 
+            // Send Information to Employee Dashboard View
             ViewBag.Employee = employee;
             ViewBag.TodayMenuItems = todayMenuItems;
             ViewBag.TodayCollections = todayCollections;
             ViewBag.CollectionHistory = collectionHistory;
+
+            // Only Published Menu is considered available
             ViewBag.MenuAvailable = todayMenu != null;
+
+            return View();
+        }
+
+        // Employee Daily Food Menu
+        // Shows today's and previous Published Menus
+        public async Task<IActionResult> DailyFoodMenu()
+        {
+            var today = DateTime.Today;
+
+            var publishedMenus = await _context.DailyMenus
+                .AsNoTracking()
+                .Include(m => m.DailyMenuItems)
+                    .ThenInclude(mi => mi.FoodItem)
+                        .ThenInclude(f => f!.FoodCategory)
+                .Where(m =>
+                    m.IsPublished &&
+                    m.MenuDate < today.AddDays(1))
+                .OrderByDescending(m => m.MenuDate)
+                .ToListAsync();
+
+            ViewBag.PublishedMenus = publishedMenus;
 
             return View();
         }

@@ -541,11 +541,14 @@
                         </a>
                     }
 
-                    <span class="sidebar-link disabled">
+                  
+                    <a asp-controller="DailyMenu"
+                       asp-action="Index"
+                       class="sidebar-link @(currentController == "DailyMenu" ? "active" : "")">
+
                         <i class="bi bi-calendar3"></i>
-                        Daily Menu
-                        <small class="coming-soon">Soon</small>
-                    </span>
+                        Daily Menu Management
+                    </a>
 
                     <span class="sidebar-link disabled">
                         <i class="bi bi-clipboard-check"></i>
@@ -602,12 +605,13 @@
                 <div class="sidebar-label">EMPLOYEE SERVICES</div>
 
                 <nav>
+                    <a asp-controller="EmployeeDashboard"
+                       asp-action="DailyFoodMenu"
+                       class="sidebar-link @(ViewContext.RouteData.Values["action"]?.ToString() == "DailyFoodMenu" ? "active" : "")">
 
-                    <span class="sidebar-link disabled">
                         <i class="bi bi-calendar-check"></i>
                         Daily Food Menu
-                        <small class="coming-soon">Soon</small>
-                    </span>
+                    </a>
 
                     <span class="sidebar-link disabled">
                         <i class="bi bi-clock-history"></i>

@@ -1,0 +1,210 @@
+﻿@model smart_corporate_cafeteria_management.ViewModels.EmployeeAccountViewModel
+
+@{
+    ViewData["Title"] = "Create Employee Account";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+            <!-- Page Header -->
+            <div class="mb-4">
+                <h2 class="fw-bold">
+                    <i class="bi bi-person-plus-fill text-success me-2"></i>
+                    Create Employee Account
+                </h2>
+
+                <p class="text-muted">
+                    Create a secure login account for an existing employee.
+                </p>
+            </div>
+
+            <!-- Success Message -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    @TempData["SuccessMessage"]
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                    </button>
+                </div>
+            }
+
+            <!-- Error Message -->
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                    @TempData["ErrorMessage"]
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                    </button>
+                </div>
+            }
+
+            <!-- Create Employee Account Card -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold mb-4">
+                        <i class="bi bi-person-badge text-success me-2"></i>
+                        Employee Login Information
+                    </h5>
+
+                    <form asp-controller="EmployeeAccount"
+                          asp-action="Create"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <!-- Employee Selection -->
+                        <div class="mb-4">
+                            <label asp-for="EmployeeId"
+                                   class="form-label fw-semibold">
+                                Select Employee
+                            </label>
+
+                            <select asp-for="EmployeeId"
+                                    asp-items="Model.AvailableEmployees"
+                                    class="form-select form-select-lg">
+
+                                <option value="">
+                                    -- Select an Employee --
+                                </option>
+                            </select>
+
+                            <span asp-validation-for="EmployeeId"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label asp-for="Password"
+                                   class="form-label fw-semibold">
+                                Password
+                            </label>
+
+                            <input asp-for="Password"
+                                   class="form-control form-control-lg"
+                                   placeholder="Enter password" />
+
+                            <span asp-validation-for="Password"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-4">
+                            <label asp-for="ConfirmPassword"
+                                   class="form-label fw-semibold">
+                                Confirm Password
+                            </label>
+
+                            <input asp-for="ConfirmPassword"
+                                   class="form-control form-control-lg"
+                                   placeholder="Re-enter password" />
+
+                            <span asp-validation-for="ConfirmPassword"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <!-- Information -->
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+
+                            The employee's registered email will be used
+                            as the login username. The Employee role
+                            will be assigned automatically.
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex flex-wrap gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-success btn-lg">
+
+                                <i class="bi bi-person-check-fill me-2"></i>
+                                Create Account
+                            </button>
+
+                            <a asp-controller="Dashboard"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary btn-lg">
+
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- Password Reset Card -->
+            <div class="card border-warning shadow-sm rounded-4">
+
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold mb-2">
+                        <i class="bi bi-shield-lock-fill text-warning me-2"></i>
+                        Account Troubleshooting
+                    </h5>
+
+                    <p class="text-muted mb-3">
+                        Reset the test Employee account password
+                        if the employee cannot log in.
+                    </p>
+
+                    <div class="alert alert-warning">
+                        <strong>Test Employee:</strong> Rahim
+                        <br />
+                        <strong>Email:</strong> rahim@example.com
+                        <br />
+                        <strong>Employee ID:</strong> 1
+                    </div>
+
+                    <form asp-controller="EmployeeAccount"
+                          asp-action="ResetRahimPassword"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="btn btn-warning">
+
+                            <i class="bi bi-arrow-counterclockwise me-2"></i>
+                            Reset Rahim's Password
+
+                        </button>
+
+                    </form>
+
+                    <small class="text-muted d-block mt-3">
+                        Temporary testing feature. Remove this
+                        reset option before production deployment.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,5 +1,5 @@
 ﻿
-using Microsoft.AspNetCore.Mvc.Rendering;
+using smart_corporate_cafeteria_management.Models;
 
 namespace smart_corporate_cafeteria_management.ViewModels
 {
@@ -9,10 +9,19 @@ namespace smart_corporate_cafeteria_management.ViewModels
 
         public DateTime MenuDate { get; set; }
 
-        public List<int> SelectedFoodItemIds { get; set; }
-            = new List<int>();
+        public List<FoodCategorySelectionViewModel> CategorySelections
+        { get; set; } = new List<FoodCategorySelectionViewModel>();
+    }
 
-        public List<SelectListItem> AvailableFoodItems { get; set; }
-            = new List<SelectListItem>();
+    public class FoodCategorySelectionViewModel
+    {
+        public int CategoryID { get; set; }
+
+        public string CategoryName { get; set; } = string.Empty;
+
+        public int? SelectedFoodItemId { get; set; }
+
+        public List<FoodItem> AvailableFoodItems { get; set; }
+            = new List<FoodItem>();
     }
 }

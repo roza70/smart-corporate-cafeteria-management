@@ -306,6 +306,9 @@ namespace smart_corporate_cafeteria_management.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)");
 
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("MenuDate")
                         .HasColumnType("date");
 

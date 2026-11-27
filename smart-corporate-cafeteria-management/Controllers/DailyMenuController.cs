@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using smart_corporate_cafeteria_management.Data;
 using smart_corporate_cafeteria_management.Models;
 using smart_corporate_cafeteria_management.ViewModels;
@@ -20,7 +19,9 @@ namespace smart_corporate_cafeteria_management.Controllers
         // Display all daily menus
         public async Task<IActionResult> Index()
         {
-            var menus = await _context.DailyMenus.ToListAsync();
+            var menus = await _context.DailyMenus
+                .OrderByDescending(m => m.MenuDate)
+                .ToListAsync();
 
             return View(menus);
         }
@@ -32,26 +33,49 @@ namespace smart_corporate_cafeteria_management.Controllers
             return View();
         }
 
-        // Save new daily menu
+        // Save new daily menu with duplicate date validation
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DailyMenu menu)
         {
-            if (ModelState.IsValid)
+            var selectedDate = menu.MenuDate.Date;
+
+            bool menuExists = await _context.DailyMenus
+                .AnyAsync(m => m.MenuDate >= selectedDate &&
+                               m.MenuDate < selectedDate.AddDays(1));
+
+            if (menuExists)
             {
-                _context.DailyMenus.Add(menu);
+                ModelState.AddModelError(
+                    "MenuDate",
+                    "A menu already exists for this date. Only one daily menu is allowed per day."
+                );
 
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
+                return View(menu);
             }
 
-            return View(menu);
+            if (!ModelState.IsValid)
+            {
+                return View(menu);
+            }
+
+            menu.MenuDate = selectedDate;
+            menu.IsPublished = false;
+
+            _context.DailyMenus.Add(menu);
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Daily menu created successfully.";
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // Display Add Food Items form
-        [HttpGet]
-        public async Task<IActionResult> AddFoodItems(int id)
+        // Publish Daily Menu
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Publish(int id)
         {
             var menu = await _context.DailyMenus
                 .FirstOrDefaultAsync(m => m.MenuID == id);
@@ -61,26 +85,134 @@ namespace smart_corporate_cafeteria_management.Controllers
                 return NotFound();
             }
 
+            var hasFoodItems = await _context.DailyMenuItems
+                .AnyAsync(mi => mi.MenuID == id);
+
+            if (!hasFoodItems)
+            {
+                TempData["ErrorMessage"] =
+                    "Cannot publish an empty menu. Please add food items first.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            menu.IsPublished = true;
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Daily menu published successfully.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Unpublish Daily Menu
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Unpublish(int id)
+        {
+            var menu = await _context.DailyMenus
+                .FirstOrDefaultAsync(m => m.MenuID == id);
+
+            if (menu == null)
+            {
+                return NotFound();
+            }
+
+            menu.IsPublished = false;
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Daily menu unpublished successfully.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Display Menu History
+        [HttpGet]
+        public async Task<IActionResult> History(DateTime? date)
+        {
+            var today = DateTime.Today;
+
+            var query = _context.DailyMenus
+                .AsNoTracking()
+                .Include(m => m.DailyMenuItems)
+                    .ThenInclude(mi => mi.FoodItem)
+                .Where(m => m.MenuDate < today);
+
+            if (date.HasValue)
+            {
+                var selectedDate = date.Value.Date;
+
+                query = query.Where(m =>
+                    m.MenuDate >= selectedDate &&
+                    m.MenuDate < selectedDate.AddDays(1));
+            }
+
+            var menuHistory = await query
+                .OrderByDescending(m => m.MenuDate)
+                .ToListAsync();
+
+            ViewBag.SelectedDate = date?.ToString("yyyy-MM-dd");
+
+            return View(menuHistory);
+        }
+
+        // Display Category-wise Add Food Items form
+        [HttpGet]
+        public async Task<IActionResult> AddFoodItems(int id)
+        {
+            var menu = await _context.DailyMenus
+                .Include(m => m.DailyMenuItems)
+                .FirstOrDefaultAsync(m => m.MenuID == id);
+
+            if (menu == null)
+            {
+                return NotFound();
+            }
+
+            var existingSelections = menu.DailyMenuItems
+                .ToDictionary(
+                    item => item.FoodItemID,
+                    item => item.FoodItemID
+                );
+
+            var categories = await _context.FoodCategories
+                .Include(c => c.FoodItems)
+                .OrderBy(c => c.CategoryName)
+                .ToListAsync();
+
             var viewModel = new AddFoodItemsViewModel
             {
                 MenuID = menu.MenuID,
                 MenuDate = menu.MenuDate,
 
-                AvailableFoodItems = await _context.FoodItems
-                    .Where(f => f.IsActive)
-                    .OrderBy(f => f.FoodName)
-                    .Select(f => new SelectListItem
+                CategorySelections = categories.Select(category =>
+                {
+                    var selectedFoodItemId = category.FoodItems
+                        .Where(food => existingSelections.ContainsKey(food.FoodItemId))
+                        .Select(food => (int?)food.FoodItemId)
+                        .FirstOrDefault();
+
+                    return new FoodCategorySelectionViewModel
                     {
-                        Value = f.FoodItemId.ToString(),
-                        Text = f.FoodName
-                    })
-                    .ToListAsync()
+                        CategoryID = category.CategoryID,
+                        CategoryName = category.CategoryName,
+                        SelectedFoodItemId = selectedFoodItemId,
+
+                        AvailableFoodItems = category.FoodItems
+                            .Where(food => food.IsActive)
+                            .OrderBy(food => food.FoodName)
+                            .ToList()
+                    };
+                }).ToList()
             };
 
             return View(viewModel);
         }
 
-        // Save selected food items
+        // Save one selected food item from each category
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddFoodItems(
@@ -94,51 +226,114 @@ namespace smart_corporate_cafeteria_management.Controllers
                 return NotFound();
             }
 
-            var selectedIds = viewModel.SelectedFoodItemIds
-                .Distinct()
-                .ToList();
-
-            if (!selectedIds.Any())
-            {
-                return RedirectToAction(
-                    nameof(AddFoodItems),
-                    new { id = viewModel.MenuID }
-                );
-            }
-
-            var validFoodItemIds = await _context.FoodItems
-                .Where(f => selectedIds.Contains(f.FoodItemId) && f.IsActive)
-                .Select(f => f.FoodItemId)
+            // Load actual categories and active food items from database
+            var categories = await _context.FoodCategories
+                .Include(c => c.FoodItems)
                 .ToListAsync();
 
-            if (validFoodItemIds.Count != selectedIds.Count)
+            var categoryIds = categories
+                .Select(c => c.CategoryID)
+                .ToHashSet();
+
+            // Prevent invalid or altered category submissions
+            if (viewModel.CategorySelections == null ||
+                viewModel.CategorySelections.Count != categories.Count ||
+                viewModel.CategorySelections.Any(
+                    s => !categoryIds.Contains(s.CategoryID)) ||
+                viewModel.CategorySelections
+                    .Select(s => s.CategoryID)
+                    .Distinct()
+                    .Count() != categories.Count)
             {
                 return BadRequest(
-                    "One or more selected food items are invalid."
+                    "Invalid food category selection."
                 );
             }
 
-            var existingFoodItemIds = await _context.DailyMenuItems
-                .Where(d => d.MenuID == viewModel.MenuID)
-                .Select(d => d.FoodItemID)
+            var selectedFoodItemIds = new List<int>();
+
+            foreach (var category in categories)
+            {
+                var selection = viewModel.CategorySelections
+                    .First(s => s.CategoryID == category.CategoryID);
+
+                if (!selection.SelectedFoodItemId.HasValue)
+                {
+                    ModelState.AddModelError(
+                        $"CategorySelections[{categories.IndexOf(category)}].SelectedFoodItemId",
+                        $"Please select one food item for {category.CategoryName}."
+                    );
+
+                    continue;
+                }
+
+                int selectedId = selection.SelectedFoodItemId.Value;
+
+                bool validSelection = category.FoodItems.Any(
+                    food => food.FoodItemId == selectedId &&
+                            food.IsActive
+                );
+
+                if (!validSelection)
+                {
+                    ModelState.AddModelError(
+                        $"CategorySelections[{categories.IndexOf(category)}].SelectedFoodItemId",
+                        $"Invalid food item selected for {category.CategoryName}."
+                    );
+
+                    continue;
+                }
+
+                selectedFoodItemIds.Add(selectedId);
+            }
+
+            if (!ModelState.IsValid ||
+                selectedFoodItemIds.Count != categories.Count)
+            {
+                // Rebuild the ViewModel so validation errors can be displayed
+                viewModel.CategorySelections = categories
+                    .OrderBy(c => c.CategoryName)
+                    .Select(category =>
+                    {
+                        var postedSelection = viewModel.CategorySelections
+                            .FirstOrDefault(s => s.CategoryID == category.CategoryID);
+
+                        return new FoodCategorySelectionViewModel
+                        {
+                            CategoryID = category.CategoryID,
+                            CategoryName = category.CategoryName,
+                            SelectedFoodItemId = postedSelection?.SelectedFoodItemId,
+
+                            AvailableFoodItems = category.FoodItems
+                                .Where(f => f.IsActive)
+                                .OrderBy(f => f.FoodName)
+                                .ToList()
+                        };
+                    }).ToList();
+
+                return View(viewModel);
+            }
+
+            // Replace existing menu items with the new selections
+            var existingMenuItems = await _context.DailyMenuItems
+                .Where(item => item.MenuID == viewModel.MenuID)
                 .ToListAsync();
 
-            var newFoodItemIds = validFoodItemIds
-                .Except(existingFoodItemIds)
-                .ToList();
+            _context.DailyMenuItems.RemoveRange(existingMenuItems);
 
-            foreach (var foodItemId in newFoodItemIds)
+            foreach (var foodItemId in selectedFoodItemIds)
             {
-                var menuItem = new DailyMenuItem
+                _context.DailyMenuItems.Add(new DailyMenuItem
                 {
                     MenuID = viewModel.MenuID,
                     FoodItemID = foodItemId
-                };
-
-                _context.DailyMenuItems.Add(menuItem);
+                });
             }
 
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Daily menu food items updated successfully.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -175,7 +370,7 @@ namespace smart_corporate_cafeteria_management.Controllers
             return View(menu);
         }
 
-        // Update Daily Menu
+        // Update Daily Menu with duplicate date validation
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, DailyMenu menu)
@@ -198,10 +393,31 @@ namespace smart_corporate_cafeteria_management.Controllers
                 return NotFound();
             }
 
-            existingMenu.MenuDate = menu.MenuDate;
+            var selectedDate = menu.MenuDate.Date;
+
+            bool duplicateDateExists = await _context.DailyMenus
+                .AnyAsync(m =>
+                    m.MenuID != id &&
+                    m.MenuDate >= selectedDate &&
+                    m.MenuDate < selectedDate.AddDays(1));
+
+            if (duplicateDateExists)
+            {
+                ModelState.AddModelError(
+                    "MenuDate",
+                    "Another menu already exists for this date. Please select a different date."
+                );
+
+                return View(menu);
+            }
+
+            existingMenu.MenuDate = selectedDate;
             existingMenu.Description = menu.Description;
 
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Daily menu updated successfully.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -236,18 +452,17 @@ namespace smart_corporate_cafeteria_management.Controllers
                 return NotFound();
             }
 
-            // Find related menu items
             var menuItems = await _context.DailyMenuItems
                 .Where(mi => mi.MenuID == id)
                 .ToListAsync();
 
-            // Delete related menu items first
             _context.DailyMenuItems.RemoveRange(menuItems);
-
-            // Delete the daily menu
             _context.DailyMenus.Remove(menu);
 
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Daily menu deleted successfully.";
 
             return RedirectToAction(nameof(Index));
         }

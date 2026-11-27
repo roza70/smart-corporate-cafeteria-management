@@ -9,6 +9,8 @@ namespace smart_corporate_cafeteria_management.Models
 
         public string? Description { get; set; }
 
+        public bool IsPublished { get; set; } = false;
+
         public ICollection<DailyMenuItem> DailyMenuItems { get; set; }
             = new List<DailyMenuItem>();
     }

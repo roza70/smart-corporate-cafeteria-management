@@ -2,7 +2,15 @@
 
 @{
     ViewData["Title"] = "Employee Management";
-    var employees = Model?.ToList() ?? new List<smart_corporate_cafeteria_management.Models.Employee>();
+
+    var employees = Model?.ToList()
+        ?? new List<smart_corporate_cafeteria_management.Models.Employee>();
+
+    var departmentCount = employees
+        .Where(e => e.Department != null)
+        .Select(e => e.Department!.DepartmentId)
+        .Distinct()
+        .Count();
 }
 
 <div class="container-fluid py-4">
@@ -10,68 +18,172 @@
     <!-- Page Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-1">Employee Management</h2>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-people-fill text-primary me-2"></i>
+                Employee Management
+            </h2>
+
             <p class="text-muted mb-0">
                 Manage employees, departments and employee information.
             </p>
         </div>
 
-        <a asp-action="Create" class="btn btn-primary px-4 py-2 mt-3 mt-md-0">
-            + Add New Employee
+        <a asp-controller="Employee"
+           asp-action="Create"
+           class="btn btn-primary px-4 py-2 mt-3 mt-md-0">
+
+            <i class="bi bi-person-plus-fill me-2"></i>
+            Add New Employee
+
         </a>
     </div>
+
+    <!-- Success Message -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close">
+            </button>
+
+        </div>
+    }
+
+    <!-- Error Message -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["ErrorMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close">
+            </button>
+
+        </div>
+    }
 
     <!-- Statistics Cards -->
     <div class="row g-3 mb-4">
 
+        <!-- Total Employees -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-4">
-                    <p class="text-muted mb-2">Total Employees</p>
-                    <h2 class="fw-bold mb-0">@employees.Count</h2>
-                    <small class="text-success">Registered employees</small>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">
+                                Total Employees
+                            </p>
+
+                            <h2 class="fw-bold mb-0">
+                                @employees.Count
+                            </h2>
+
+                            <small class="text-success">
+                                Registered employees
+                            </small>
+                        </div>
+
+                        <div class="rounded-3 bg-primary bg-opacity-10
+                            text-primary p-3">
+                            <i class="bi bi-people-fill fs-3"></i>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
 
+        <!-- Departments -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-4">
-                    <p class="text-muted mb-2">Departments</p>
-                    
-                    <h2 class="fw-bold mb-0">
-                        @(employees
-                            .Where(e => e.Department != null)
-                            .Select(e => e.Department!.DepartmentId)
-                            .Distinct()
-                            .Count())
-                    </h2>
 
-                    <small class="text-primary">Departments represented</small>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">
+                                Departments
+                            </p>
+
+                            <h2 class="fw-bold mb-0">
+                                @departmentCount
+                            </h2>
+
+                            <small class="text-primary">
+                                Departments represented
+                            </small>
+                        </div>
+
+                        <div class="rounded-3 bg-success bg-opacity-10
+                            text-success p-3">
+                            <i class="bi bi-building fs-3"></i>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
 
+        <!-- Employee Records -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-4">
-                    <p class="text-muted mb-2">Employee Records</p>
-                    <h2 class="fw-bold mb-0">@employees.Count</h2>
-                    <small class="text-muted">Available records</small>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">
+                                Employee Records
+                            </p>
+
+                            <h2 class="fw-bold mb-0">
+                                @employees.Count
+                            </h2>
+
+                            <small class="text-muted">
+                                Available records
+                            </small>
+                        </div>
+
+                        <div class="rounded-3 bg-warning bg-opacity-10
+                            text-warning p-3">
+                            <i class="bi bi-card-list fs-3"></i>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- Employee Table Card -->
+    <!-- Employee Directory -->
     <div class="card border-0 shadow-sm rounded-4">
 
         <div class="card-body p-4">
 
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <!-- Table Header -->
+            <div class="d-flex flex-wrap justify-content-between
+                align-items-center mb-4">
+
                 <div>
-                    <h5 class="fw-bold mb-1">Employee Directory</h5>
+                    <h5 class="fw-bold mb-1">
+                        <i class="bi bi-person-lines-fill me-2 text-primary"></i>
+                        Employee Directory
+                    </h5>
+
                     <p class="text-muted small mb-0">
                         View and manage all registered employees.
                     </p>
@@ -84,11 +196,14 @@
                            placeholder="Search employees..."
                            style="min-width:250px;" />
                 </div>
+
             </div>
 
+            <!-- Employee Table -->
             <div class="table-responsive">
 
-                <table class="table align-middle table-hover" id="employeeTable">
+                <table class="table align-middle table-hover"
+                       id="employeeTable">
 
                     <thead class="table-light">
                         <tr>
@@ -108,58 +223,94 @@
                             @foreach (var employee in employees)
                             {
                                 <tr>
+
+                                    <!-- Employee ID -->
                                     <td>
                                         <span class="fw-semibold">
                                             #@employee.EmployeeId
                                         </span>
                                     </td>
 
+                                    <!-- Employee Name -->
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-2 fw-bold"
+
+                                            <div class="rounded-circle bg-primary
+                                                bg-opacity-10 text-primary
+                                                d-flex align-items-center
+                                                justify-content-center me-2
+                                                fw-bold"
                                                  style="width:38px;height:38px;">
+
                                                 @(string.IsNullOrWhiteSpace(employee.EmployeeName)
                                                     ? "?"
                                                     : employee.EmployeeName.Substring(0, 1).ToUpper())
+
                                             </div>
 
                                             <span class="fw-semibold">
                                                 @employee.EmployeeName
                                             </span>
+
                                         </div>
                                     </td>
 
-                                    <td>@employee.Email</td>
+                                    <!-- Email -->
+                                    <td>
+                                        @(employee.Email ?? "Not provided")
+                                    </td>
 
-                                    <td>@employee.Phone</td>
+                                    <!-- Phone -->
+                                    <td>
+                                        @(employee.Phone ?? "Not provided")
+                                    </td>
 
+                                    <!-- Department -->
                                     <td>
                                         <span class="badge bg-light text-primary border">
-                                            @(employee.Department?.DepartmentName ?? "Unassigned")
+                                            @(employee.Department?.DepartmentName
+                                                ?? "Unassigned")
                                         </span>
                                     </td>
 
+                                    <!-- Actions -->
                                     <td class="text-center text-nowrap">
 
-                                        <a asp-action="Details"
+                                        <a asp-controller="Employee"
+                                           asp-action="Details"
                                            asp-route-id="@employee.EmployeeId"
-                                           class="btn btn-sm btn-outline-info me-1">
+                                           class="btn btn-sm btn-outline-info me-1"
+                                           title="View Details">
+
+                                            <i class="bi bi-eye"></i>
                                             Details
+
                                         </a>
 
-                                        <a asp-action="Edit"
+                                        <a asp-controller="Employee"
+                                           asp-action="Edit"
                                            asp-route-id="@employee.EmployeeId"
-                                           class="btn btn-sm btn-outline-primary me-1">
+                                           class="btn btn-sm btn-outline-primary me-1"
+                                           title="Edit Employee">
+
+                                            <i class="bi bi-pencil-square"></i>
                                             Edit
+
                                         </a>
 
-                                        <a asp-action="Delete"
+                                        <a asp-controller="Employee"
+                                           asp-action="Delete"
                                            asp-route-id="@employee.EmployeeId"
-                                           class="btn btn-sm btn-outline-danger">
+                                           class="btn btn-sm btn-outline-danger"
+                                           title="Delete Employee">
+
+                                            <i class="bi bi-trash"></i>
                                             Delete
+
                                         </a>
 
                                     </td>
+
                                 </tr>
                             }
                         }
@@ -167,13 +318,26 @@
                         {
                             <tr>
                                 <td colspan="6" class="text-center py-5">
-                                    <h5 class="text-muted">No Employees Found</h5>
+
+                                    <i class="bi bi-people display-4 text-muted"></i>
+
+                                    <h5 class="text-muted mt-3">
+                                        No Employees Found
+                                    </h5>
+
                                     <p class="text-muted mb-3">
                                         Start by adding your first employee.
                                     </p>
-                                    <a asp-action="Create" class="btn btn-primary">
+
+                                    <a asp-controller="Employee"
+                                       asp-action="Create"
+                                       class="btn btn-primary">
+
+                                        <i class="bi bi-person-plus-fill me-2"></i>
                                         Add Employee
+
                                     </a>
+
                                 </td>
                             </tr>
                         }
@@ -182,8 +346,12 @@
 
                 </table>
 
-                <p id="noSearchResults" class="text-center text-muted py-3 d-none">
+                <!-- Search Empty Message -->
+                <p id="noSearchResults"
+                   class="text-center text-muted py-3 d-none">
+
                     No matching employees found.
+
                 </p>
 
             </div>
@@ -194,21 +362,32 @@
 </div>
 
 @section Scripts {
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
             const searchInput = document.getElementById("employeeSearch");
-            const tableRows = document.querySelectorAll("#employeeTable tbody tr");
+            const tableRows = document.querySelectorAll(
+                "#employeeTable tbody tr"
+            );
             const noResults = document.getElementById("noSearchResults");
+
+            if (!searchInput || !noResults) {
+                return;
+            }
 
             searchInput.addEventListener("input", function() {
 
-                const searchValue = searchInput.value.toLowerCase().trim();
+                const searchValue = searchInput.value
+                    .toLowerCase()
+                    .trim();
+
                 let visibleCount = 0;
 
                 tableRows.forEach(function(row) {
 
-                    const rowText = row.innerText.toLowerCase();
+                    const rowText = (row.innerText || "").toLowerCase();
+
                     const matches = rowText.includes(searchValue);
 
                     row.style.display = matches ? "" : "none";
@@ -216,14 +395,17 @@
                     if (matches) {
                         visibleCount++;
                     }
+
                 });
 
                 noResults.classList.toggle(
                     "d-none",
                     visibleCount > 0 || tableRows.length === 0
                 );
+
             });
 
         });
     </script>
+
 }

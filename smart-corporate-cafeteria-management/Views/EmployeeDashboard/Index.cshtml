@@ -1,133 +1,350 @@
-﻿@{
+﻿@using System.Linq
+
+@{
     ViewData["Title"] = "Employee Dashboard";
+
     var employee = ViewBag.Employee;
-    var menuItems = ViewBag.TodayMenuItems as List<string> ?? new List<string>();
+    var menuItems = ViewBag.TodayMenuItems as IEnumerable<dynamic>;
     var history = ViewBag.CollectionHistory as IEnumerable<dynamic>;
+
+    var menuAvailable = ViewBag.MenuAvailable == true;
+    var menuCount = menuItems?.Count() ?? 0;
 }
 
 <div class="container-fluid py-4">
 
-    <div class="p-4 mb-4 rounded-4 text-white"
+    <!-- WELCOME HEADER -->
+    <div class="p-4 p-lg-5 mb-4 rounded-4 text-white"
          style="background: linear-gradient(120deg, #176b50, #26966e);">
-        <h2 class="fw-bold">Welcome, @employee.EmployeeName!</h2>
-        <p class="mb-0">Your personal cafeteria dashboard</p>
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+            <div>
+                <span class="small opacity-75">EMPLOYEE SELF-SERVICE</span>
+
+                <h2 class="fw-bold mt-2 mb-2">
+                    Welcome, @employee.EmployeeName!
+                </h2>
+
+                <p class="mb-0 opacity-75">
+                    Your personal cafeteria dashboard
+                </p>
+            </div>
+
+            <div class="text-end">
+                <div class="fs-1">🍱</div>
+                <span class="small">
+                    @DateTime.Today.ToString("dd MMMM yyyy")
+                </span>
+            </div>
+
+        </div>
     </div>
 
+    <!-- SUMMARY CARDS -->
     <div class="row g-3 mb-4">
+
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">Employee ID</h6>
-                    <h3 class="fw-bold">@employee.EmployeeId</h3>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p class="text-muted mb-2">Employee ID</p>
+                            <h3 class="fw-bold mb-0">
+                                @employee.EmployeeId
+                            </h3>
+                        </div>
+                        <div class="fs-2 text-success">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">Today's Meal Collections</h6>
-                    <h3 class="fw-bold">@ViewBag.TodayCollections</h3>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p class="text-muted mb-2">Today's Meal Collections</p>
+                            <h3 class="fw-bold mb-0">
+                                @ViewBag.TodayCollections
+                            </h3>
+                        </div>
+                        <div class="fs-2 text-primary">
+                            <i class="bi bi-basket"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">Today's Menu Items</h6>
-                    <h3 class="fw-bold">@menuItems.Count</h3>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p class="text-muted mb-2">Today's Menu Items</p>
+                            <h3 class="fw-bold mb-0">
+                                @menuCount / 5
+                            </h3>
+                        </div>
+                        <div class="fs-2 text-warning">
+                            <i class="bi bi-egg-fried"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 
+    <!-- MAIN CONTENT -->
     <div class="row g-4">
 
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body p-4">
-                    <h4 class="fw-bold mb-3">My Profile</h4>
+        <!-- EMPLOYEE PROFILE -->
+        <div class="col-lg-5">
 
-                    <p><strong>Name:</strong> @employee.EmployeeName</p>
-                    <p><strong>Email:</strong> @employee.Email</p>
-                    <p><strong>Phone:</strong> @employee.Phone</p>
-                    <p><strong>Employee ID:</strong> @employee.EmployeeId</p>
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex align-items-center gap-3 mb-4">
+
+                        <div class="rounded-circle bg-success bg-opacity-10
+                            text-success d-flex align-items-center
+                            justify-content-center"
+                             style="width:55px;height:55px;font-size:25px;">
+                            <i class="bi bi-person"></i>
+                        </div>
+
+                        <div>
+                            <h4 class="fw-bold mb-1">My Profile</h4>
+                            <p class="text-muted small mb-0">
+                                Your employee information
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <small class="text-muted">Full Name</small>
+                        <div class="fw-semibold">@employee.EmployeeName</div>
+                    </div>
+
+                    <hr />
+
+                    <div class="mb-3">
+                        <small class="text-muted">Email Address</small>
+                        <div class="fw-semibold">@employee.Email</div>
+                    </div>
+
+                    <hr />
+
+                    <div class="mb-3">
+                        <small class="text-muted">Phone Number</small>
+                        <div class="fw-semibold">@employee.Phone</div>
+                    </div>
+
+                    <hr />
+
+                    <div class="mb-3">
+                        <small class="text-muted">Employee ID</small>
+                        <div class="fw-semibold">@employee.EmployeeId</div>
+                    </div>
+
+                    <hr />
+
+                    <div>
+                        <small class="text-muted">Department</small>
+                        <div class="fw-semibold">
+                            @(employee.Department?.DepartmentName ?? "Not assigned")
+                        </div>
+                    </div>
+
                 </div>
             </div>
+
         </div>
 
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body p-4">
-                    <h4 class="fw-bold mb-3">Today's Lunch Menu</h4>
+        <!-- TODAY'S PUBLISHED MENU -->
+        <div class="col-lg-7">
 
-                    @if (menuItems.Any())
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between
+                        align-items-center flex-wrap gap-2 mb-4">
+
+                        <div>
+                            <h4 class="fw-bold mb-1">
+                                Today's Lunch Menu
+                            </h4>
+
+                            <p class="text-muted small mb-0">
+                                Your cafeteria's daily food selection
+                            </p>
+                        </div>
+
+                        @if (menuAvailable)
+                        {
+                            <span class="badge bg-success rounded-pill px-3 py-2">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Published
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                Not Published
+                            </span>
+                        }
+
+                    </div>
+
+                    @if (menuAvailable && menuItems != null && menuItems.Any())
                     {
-                        <ul class="list-group list-group-flush">
+                        <div class="list-group list-group-flush">
+
                             @foreach (var item in menuItems)
                             {
-                                <li class="list-group-item">
-                                    <span class="text-success me-2">●</span>
-                                    @item
-                                </li>
+                                <div class="list-group-item px-0 py-3
+                                    d-flex justify-content-between
+                                    align-items-center">
+
+                                    <div>
+                                        <div class="fw-semibold">
+                                            @item.CategoryName
+                                        </div>
+
+                                        <small class="text-muted">
+                                            @item.FoodName
+                                        </small>
+                                    </div>
+
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+
+                                </div>
                             }
-                        </ul>
+
+                        </div>
                     }
                     else
                     {
-                        <p class="text-muted">Today's menu has not been published yet.</p>
+                        <div class="text-center py-5">
+
+                            <div class="fs-1 mb-3">🍽️</div>
+
+                            <h5 class="fw-bold">
+                                Today's Menu Is Not Available
+                            </h5>
+
+                            <p class="text-muted mb-0">
+                                The cafeteria has not published today's lunch menu yet.
+                                Please check again later.
+                            </p>
+
+                        </div>
                     }
 
-                    <p class="text-muted mt-3 mb-0">
+                    <div class="alert alert-success border-0 rounded-3 mt-3 mb-0">
+                        <i class="bi bi-heart-fill me-2"></i>
                         Employee lunch is provided free of charge.
-                    </p>
+                    </div>
+
                 </div>
             </div>
+
         </div>
 
+        <!-- MEAL COLLECTION HISTORY -->
         <div class="col-12">
+
             <div class="card border-0 shadow-sm rounded-4">
+
                 <div class="card-body p-4">
-                    <h4 class="fw-bold mb-3">My Meal Collection History</h4>
+
+                    <div class="d-flex align-items-center gap-3 mb-4">
+
+                        <div class="fs-2 text-success">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+
+                        <div>
+                            <h4 class="fw-bold mb-1">
+                                My Meal Collection History
+                            </h4>
+
+                            <p class="text-muted small mb-0">
+                                Your latest meal collection records
+                            </p>
+                        </div>
+
+                    </div>
 
                     @if (history != null && history.Any())
                     {
                         <div class="table-responsive">
+
                             <table class="table table-hover align-middle">
-                                <thead>
+
+                                <thead class="table-light">
                                     <tr>
                                         <th>Date</th>
                                         <th>Time</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
+
                                     @foreach (var collection in history)
                                     {
                                         <tr>
-                                            <td>@collection.CollectionDate.ToString("dd MMM yyyy")</td>
-                                            <td>@collection.CollectionTime</td>
+
                                             <td>
-                                                <span class="badge bg-success">
+                                                @collection.CollectionDate.ToString("dd MMM yyyy")
+                                            </td>
+
+                                            <td>
+                                                @collection.CollectionTime
+                                            </td>
+
+                                            <td>
+                                                <span class="badge bg-success rounded-pill px-3 py-2">
                                                     @collection.Status
                                                 </span>
                                             </td>
+
                                         </tr>
                                     }
+
                                 </tbody>
+
                             </table>
+
                         </div>
                     }
                     else
                     {
-                        <p class="text-muted mb-0">
-                            You don't have any meal collection history yet.
-                        </p>
+                        <div class="text-center py-4">
+
+                            <i class="bi bi-inbox fs-1 text-muted"></i>
+
+                            <p class="text-muted mt-2 mb-0">
+                                You don't have any meal collection history yet.
+                            </p>
+
+                        </div>
                     }
+
                 </div>
             </div>
+
         </div>
 
     </div>
+
 </div>
